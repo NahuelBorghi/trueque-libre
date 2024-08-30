@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Web Components</title>
+</head>
+<body>
+    <input type="file" id="fileInput" accept=".jpg, .jpeg, .png">
+    <input type="text" id="creationUser" placeholder="Usuario de creación" maxlength="150">
+    <button id="uploadButton">Subir Imagen</button>
+
+    <img id="imageContainer" src="" alt="Image" />
+    <button id="getButton">Pedir Imagen</button>
+
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', () => {
+            const fileInput = document.getElementById('fileInput');
+            const creationUser = document.getElementById('creationUser').value;
+
+            if (fileInput.files.length === 0 || !creationUser) {
+                alert('Por favor, selecciona una imagen y proporciona el usuario de creación.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('fileData', file);
+            formData.append('creationUser', creationUser);
+
+            console.log('formData', formData.get('creationUser'));
+            console.log('creationUser', creationUser);
+
+            // Subir la imagen
+            fetch('http://localhost:8080/image/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('getButton').setAttribute('data-image-id', data.imageId);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('getButton').addEventListener('click', () => {
+            // Obtener el imageId del botón
+            const imageId = document.getElementById('getButton').getAttribute('data-image-id');
+            console.log('imageId', imageId);
+
+            if (!imageId) {
+                alert('No se ha cargado ninguna imagen.');
+                return;
+            }
+
+            // Obtener la imagen desde el backend
+            fetch(`http://localhost:8080/image/${imageId}`)
+                .then(response => response.blob())
+                .then(blob => {
+                    const imgUrl = URL.createObjectURL(blob);
+                    document.getElementById('imageContainer').src = imgUrl;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

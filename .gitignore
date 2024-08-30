@@ -1,0 +1,4 @@
+db/chromadb
+db/mysql
+db/mongo
+.env

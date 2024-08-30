@@ -1,0 +1,4 @@
+decidi agregar la libreria multer para manejar los formData ya que facilita mucho su uso y es compatible con la licencia del repositorio
+
+tendriamos que modificar la base de datos para agregar en todas las tablas los datos de auditoria (creacion y modificacion, tanto de fecha como usuario que lo hizo)
+

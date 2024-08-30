@@ -1,0 +1,80 @@
+services:
+  backend:
+    build:
+      context: backend
+    restart: always
+    ports: 
+      - '8080:8080'
+    networks:
+      - private
+      - public
+    depends_on:
+      - db
+      - chromadb
+      - mongodb
+    environment:
+      DATABASE_HOST: db
+      CHROMA_HOST: chromadb
+      MONGO_HOST: mongodb
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      CHROMA_COLLECTION: ${CHROMA_COLLECTION}
+      MONGO_COLLECTION: ${MONGO_COLLECTION}
+
+  db:
+    image: mysql:5.7
+    restart: always
+    ports: 
+      - '3306:3306'
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks: 
+      - private
+    volumes: 
+      - ./db/mysql:/mysql/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_USER}
+
+  chromadb:
+    image: chromadb/chroma:latest
+    restart: always
+    ports: 
+      - '8000:8000'
+    networks: 
+      - private
+    volumes: 
+      - ./db/chromadb:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma # this is the default path, change it as needed
+      - ANONYMIZED_TELEMETRY=${ANONYMIZED_TELEMETRY:-TRUE}
+    
+  mongodb:
+    image: mongo:6-jammy
+    restart: always
+    ports: 
+      - '27017:27017'
+    networks: 
+      - private
+    volumes: 
+      - ./db/mongo:/mongo/mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DATABASE_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+  
+  frontend:
+    build:
+      context: frontend
+    restart: always
+    ports: 
+      - '80:80'
+    depends_on: 
+      - backend
+    networks: 
+      - public
+
+networks:
+  public:
+  private:
+    driver: bridge
