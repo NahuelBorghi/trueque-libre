@@ -19,10 +19,10 @@ class RegisterView extends HTMLElement {
         this._labelEmail.className = 'form-label'
         this._labelEmail.innerText = 'Email'
         this._inputEmail = document.createElement('input')
-        this._inputEmail.type = 'input'
+        this._inputEmail.type = 'email'
         this._inputEmail.className = 'form-control'
         this._inputEmail.id = 'email'
-        this._inputEmail.setAttribute('required', true)
+        // this._inputEmail.setAttribute('required', true)
         this._labelEmailError = document.createElement('label')
         this._labelEmailError.className = 'form-label text-warning'
         this._labelEmailError.id = 'errorLabelEmail'
@@ -40,7 +40,7 @@ class RegisterView extends HTMLElement {
         this._inputUsername.type = 'input'
         this._inputUsername.className = 'form-control'
         this._inputUsername.id = 'username'
-        this._inputUsername.setAttribute('required', true)
+        // this._inputUsername.setAttribute('required', true)
         this._labelUsernameError = document.createElement('label')
         this._labelUsernameError.className = 'form-label text-warning'
         this._labelUsernameError.id = 'errorLabelUser'
@@ -58,7 +58,7 @@ class RegisterView extends HTMLElement {
         this._inputPassword.type = 'password'
         this._inputPassword.className = 'form-control'
         this._inputPassword.id = 'password'
-        this._inputPassword.setAttribute('required', true)
+        // this._inputPassword.setAttribute('required', true)
         this._labelPasswordError = document.createElement('label')
         this._labelPasswordError.className = 'form-label text-warning'
         this._labelPasswordError.id = 'errorLabelPass'
@@ -132,13 +132,39 @@ class RegisterView extends HTMLElement {
         this._inputPassword.type = 'password'
     }
 
-    connectedCallback(){
-        this._inputCheckbox.addEventListener('change', () => {
-            this._innerControler.onClickCheckbox(this._inputCheckbox.checked)
-        })
+    getUsername(){
+        return this._inputUsername.value
+    }
+    
+    getPassword(){
+        return this._inputPassword.value
+    }
+    
+    getEmail(){
+        return this._inputEmail.value
     }
 
-    disconnectedCallback(){}
+    updateErrorLabel(errorMessage){
+        this._labelEmailError.innerText = errorMessage
+        this._labelPasswordError.innerText = errorMessage
+        this._labelUsernameError.innerText = errorMessage
+    }
+
+    connectedCallback(){
+        this._inputCheckbox.onchange = () => {
+            this._innerControler.onClickCheckbox(this._inputCheckbox.checked)
+        }
+
+        this._form.onsubmit = (ev) => {
+            ev.preventDefault()
+            this._innerControler.onSubmit()
+        }
+    }
+
+    disconnectedCallback(){
+        this._inputCheckbox.onchange = null 
+        this._form.onsubmit = null  
+    }
 
     adoptedCallback() {}
 
