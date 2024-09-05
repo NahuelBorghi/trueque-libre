@@ -22,7 +22,7 @@ class RegisterView extends HTMLElement {
         this._inputEmail.type = 'email'
         this._inputEmail.className = 'form-control'
         this._inputEmail.id = 'email'
-        // this._inputEmail.setAttribute('required', true)
+        this._inputEmail.setAttribute('required', true)
         this._labelEmailError = document.createElement('label')
         this._labelEmailError.className = 'form-label text-warning'
         this._labelEmailError.id = 'errorLabelEmail'
@@ -40,7 +40,7 @@ class RegisterView extends HTMLElement {
         this._inputUsername.type = 'input'
         this._inputUsername.className = 'form-control'
         this._inputUsername.id = 'username'
-        // this._inputUsername.setAttribute('required', true)
+        this._inputUsername.setAttribute('required', true)
         this._labelUsernameError = document.createElement('label')
         this._labelUsernameError.className = 'form-label text-warning'
         this._labelUsernameError.id = 'errorLabelUser'
@@ -58,7 +58,7 @@ class RegisterView extends HTMLElement {
         this._inputPassword.type = 'password'
         this._inputPassword.className = 'form-control'
         this._inputPassword.id = 'password'
-        // this._inputPassword.setAttribute('required', true)
+        this._inputPassword.setAttribute('required', true)
         this._labelPasswordError = document.createElement('label')
         this._labelPasswordError.className = 'form-label text-warning'
         this._labelPasswordError.id = 'errorLabelPass'
