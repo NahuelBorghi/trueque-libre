@@ -5,9 +5,12 @@ const app = express();
 const port = process.env.PORT || 80;
 
 app.use(express.static(path.join(`${__dirname}/pages`)));
-console.log('path.join(`${__dirname}/pages`)', path.join(`${__dirname}/pages`))
 
 app.get("/", (req, res) => {
+    res.sendFile(path.join(`${__dirname}/pages`, "login.html"));
+});
+
+app.get("/register", (req, res) => {
     res.sendFile(path.join(`${__dirname}/pages`, "register.html"));
 });
 
