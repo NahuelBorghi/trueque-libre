@@ -51,7 +51,6 @@ class AppModel extends EventTarget {
         const data = await response.json()
 
         if(data.status !== "error"){
-            this._idUser = data.idUser
             this.dispatchEvent(new CustomEvent('userLogout'))
         }
         console.log('data', data)
