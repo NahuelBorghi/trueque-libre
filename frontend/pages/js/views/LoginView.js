@@ -150,6 +150,6 @@ class LoginView extends HTMLElement {
     static get observableAttributes() {}
 }
 
-customElements.define('x-register-component-view', LoginView)
+customElements.define('x-login-component-view', LoginView)
 
 export { LoginView }
