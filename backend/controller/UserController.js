@@ -37,6 +37,20 @@ class UserController {
             throw new BaseException(`UserController.login: ${error.message}`, error.statusCode??400, "Bad Request", "UserLoginError");
         }
     }
+    async logout(req, res) {
+        const label = `-------------------- User logout - ${Date.now()}`;
+        console.time(label);
+        try {
+            const { idUser } = req.body;
+            await this.userService.logOutUser(idUser);
+            console.timeLog(label, "user logged out successfully");
+            console.timeEnd(label);
+            return res.status(200).send({ message: 'User logged out' });
+        } catch (error) {
+            console.timeEnd(label)
+            throw new BaseException(`UserController.logout: ${error.message}`, error.statusCode??400, "Bad Request", "UserLogoutError");
+        }
+    }
 }
 
 module.exports = UserController;

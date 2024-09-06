@@ -29,7 +29,20 @@ class UserService {
             const userLogged = await this.mysqlRepository.updateUserState(user.id, true);
             return userLogged
         } catch (error) {
-            throw new BaseException(`loginUserService: ${error.message}`, error.statusCode??400, "Bad Request", "UserCreationError");
+            throw new BaseException(`loginUserService: ${error.message}`, error.statusCode??400, "Bad Request", "UserLoginError");
+        }
+    }
+
+    async logOutUser(idUser) {
+        try {
+            const user = await this.mysqlRepository.getUserById(idUser);
+            if (!user.userName) {
+                throw new BaseException('User not found', 404, "Not Found", "UserNotFoundError");
+            } 
+            const userLogged = await this.mysqlRepository.updateUserState(user.id, false);
+            return userLogged
+        } catch (error) {
+            throw new BaseException(`logoutUserService: ${error.message}`, error.statusCode??400, "Bad Request", "UserLogoutError");
         }
     }
 }
