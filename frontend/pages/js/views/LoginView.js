@@ -82,7 +82,7 @@ class LoginView extends HTMLElement {
         this._registerButton.type = "submit"
         this._registerButton.classList = "btn w-100"
         this._registerButton.style = "background-color: #199b9a; color: white"
-        this._registerButton.innerText = "Registrar"
+        this._registerButton.innerText = "Loguear"
 
         this._form = document.createElement('form')
         this._form.className = 'w-25'
