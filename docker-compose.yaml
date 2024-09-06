@@ -37,7 +37,7 @@ services:
       MYSQL_DATABASE: ${DATABASE_USER}
 
   chromadb:
-    image: chromadb/chroma:latest
+    image: chromadb/chroma:0.5.5
     restart: always
     ports: 
       - '8000:8000'
