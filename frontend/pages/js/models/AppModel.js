@@ -2,7 +2,6 @@ class AppModel extends EventTarget {
     constructor() {
         super()
         this._url = 'http://localhost:8080'
-        this._isUserLogged = false
     }
 
     async register(user){
@@ -16,7 +15,7 @@ class AppModel extends EventTarget {
         const data = await response.json()
         
         if(data.status !== error){
-            this._idUser = data.idUser
+            this._idUser = data.userID
             this.dispatchEvent(new CustomEvent('userRegister'))
         }
         console.log('data', data)
@@ -34,8 +33,26 @@ class AppModel extends EventTarget {
         const data = await response.json()
 
         if(data.status !== "error"){
-            this._idUser = data.idUser
+            this._idUser = data.userID
             this.dispatchEvent(new CustomEvent('userLogin'))
+        }
+        console.log('data', data)
+        return data
+    }
+
+    async logout(){
+        console.log('idUser', this._idUser)
+        const response = await fetch(`${this._url}/user/logout`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idUser: this._idUser })
+        })
+
+        const data = await response.json()
+
+        if(data.status !== "error"){
+            this._idUser = data.idUser
+            this.dispatchEvent(new CustomEvent('userLogout'))
         }
         console.log('data', data)
         return data

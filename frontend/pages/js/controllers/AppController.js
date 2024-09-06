@@ -11,10 +11,18 @@ class AppController {
             console.log('event userLogin')
             this.onUserLogged()
         })
+        modelComponent.addEventListener('userLogout', () => {
+            console.log('event userLogin')
+            this.onUserLoggedOut()
+        })
+    }
+
+    onUserLoggedOut(){
+        this._viewComponent.renderView('login')
     }
 
     onUserLogged(){
-        this._viewComponent.renderView('home')
+        this._viewComponent.renderView('publications')
     }
 
     onPressRegisterTag(){

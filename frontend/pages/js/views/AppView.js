@@ -1,5 +1,6 @@
 import { AppController } from '../controllers/AppController.js'
 import { LoginView } from './LoginView.js';
+import { PublicationView } from './PublicationView.js';
 import { RegisterView } from './RegisterView.js';
 
 class AppView extends HTMLElement {
@@ -8,6 +9,7 @@ class AppView extends HTMLElement {
         this._innerControler = new AppController(this, modelComponent);
         this._registerView = new RegisterView(modelComponent)
         this._loginView = new LoginView(modelComponent)
+        this._publicationView = new PublicationView(modelComponent)
 
         this._renderComponent = this._loginView
         document.title = 'Login'
@@ -28,6 +30,12 @@ class AppView extends HTMLElement {
             {
                 document.title = 'Login'
                 this._renderComponent = this._loginView
+            }
+                break;
+            case 'publications':
+            {
+                document.title = 'Trueque Libre'
+                this._renderComponent = this._publicationView
             }
                 break;
             default:
