@@ -63,7 +63,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `trueque-libre`.`Image` (
   `id` VARCHAR(50) NOT NULL,
-  `image` BLOB(8388000) NOT NULL,
+  `image` VARCHAR(255) NOT NULL,
   `mimetype` VARCHAR(45) NOT NULL,
   `creationDate` DATETIME NOT NULL,
   `creationUser` VARCHAR(50) NOT NULL,
