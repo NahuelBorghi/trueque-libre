@@ -1,7 +1,7 @@
 const BaseException = require('../exceptions/BaseException');
 const User = require('../model/UserModel');
 const { createConnection } = require("mysql2/promise");
-const { hashPassword } = require('../utils/hash');
+const { hashFunciton } = require('../utils/hash');
 
 
 class MySqlRepository {
@@ -29,7 +29,7 @@ class MySqlRepository {
     
     // User methods
     async createUser(userName, password, email) {
-        const { hash, salt } = hashPassword(password);
+        const { hash, salt } = hashFunciton(password);
         const newUser = new User(userName, hash, salt, email);
         const query = `INSERT INTO Users (id, userName, password, salt, email, state) VALUES (?, ?, ?, ?, ?, ?)`;
         try {
