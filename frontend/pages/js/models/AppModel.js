@@ -14,7 +14,7 @@ class AppModel extends EventTarget {
     
         const data = await response.json()
         
-        if(data.status !== error){
+        if(data.status !== "error"){
             this._idUser = data.userID
             this.dispatchEvent(new CustomEvent('userRegister'))
         }
