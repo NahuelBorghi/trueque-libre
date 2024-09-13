@@ -1,6 +1,7 @@
 const BaseException = require("../exceptions/BaseException.js");
 const ImageService = require("../service/ImageService.js");
 const multer = require('multer');
+const { hashFunciton } = require("../utils/hash.js");
 
 class ImageController {
     constructor() {
@@ -32,13 +33,19 @@ class ImageController {
                 
                 const creationUser = req.body.creationUser;
                 const file = req.file;
-                const mimetype = file.mimetype;
+                
+                console.log('file', file)
 
                 if (!file || !creationUser) {
                     throw new BaseException("Missing required fields", 400, "Bad Request", "MissingRequiredFields");
                 }
+
+                const mimetype = file.mimetype;
+                const { hash } = hashFunciton(file.buffer, "md5");
+                console.log('hash', hash)
+
                 // Guardar el archivo utilizando el servicio
-                const imageId = await this.imageService.saveImage(file.buffer, mimetype, creationUser);
+                const imageId = await this.imageService.saveImage(file.buffer, hash, mimetype, creationUser);
                 console.log("Image ID:", imageId);
 
                 res.status(201).json({ message: 'Imagen guardada exitosamente.', imageId });

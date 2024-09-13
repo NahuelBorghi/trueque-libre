@@ -121,15 +121,16 @@ class MySqlRepository {
 
 
     // Image methods
-    async insertImage ({ id, image, mimetype, creationDate, creationUser }){
-        const query = ` INSERT INTO Image (id, image, mimetype, creationDate, creationUser) VALUES (?, ?, ?, ?, ?); `;
+    async insertImage ({ id, imageName, imageRoute, mimetype, creationDate, creationUser }){
+        const query = ` INSERT INTO Image (id, imageName, imageRoute, mimetype, creationDate, creationUser) VALUES (?, ?, ?, ?, ?, ?); `;
         const validationQuery = `SELECT id FROM Users WHERE id = ?`;
         try {
             const [validation] = await this.connection.execute(validationQuery, [creationUser]);
             if (validation.length === 0) {
                 throw new BaseException("User not found", 404, "Not Found", "UserNotFound");
             }
-            await this.connection.execute(query, [id, image, mimetype, creationDate, creationUser]);
+            console.log({id, imageName, imageRoute, mimetype, creationDate, creationUser})
+            await this.connection.execute(query, [id, imageName, imageRoute, mimetype, creationDate, creationUser]);
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.insertImage: ${error.message}`, 400, "Bad Request", "ImageCreationError");

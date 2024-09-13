@@ -1,13 +1,12 @@
 const crypto = require("crypto");
 
 // Función para hashear una contraseña
-function hashFunciton(password, salt = crypto.randomBytes(16).toString("hex")) {
+function hashFunciton(password, digest = "sha512", salt = crypto.randomBytes(16).toString("hex")) {
     const iterations = 1212;
     const keylen = 64; // Longitud de la clave generada
-    const digest = "sha512"; // Algoritmo hash a utilizar
 
     const hash = crypto
-        .pbkdf2Sync(password, salt, iterations, keylen, digest)
+        .pbkdf2Sync(password, salt, iterations, keylen, digest) // revisar porque el hash repite el hash
         .toString("hex");
 
     return { hash, salt };
