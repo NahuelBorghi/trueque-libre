@@ -1,5 +1,6 @@
 const BaseException = require('../exceptions/BaseException');
 const UserService = require('../service/UserService');
+const { generateToken } = require('../utils/jwt');
 
 class UserController {
     constructor() {
@@ -28,10 +29,14 @@ class UserController {
         console.time(label);
         try {
             const { userName, password} = req.body;
-            const flag = await this.userService.logInUser(userName, password);
+            const user = await this.userService.logInUser(userName, password);
+            const token = await generateToken(user);
             console.timeLog(label, "user logged in successfully");
             console.timeEnd(label);
-            return res.status(200).send({ userID: flag.id, userName: flag.name });
+            return res
+                .cookie('Authentication', token, { httpOnly: true, path: '/', sameSite: 'None' })
+                .status(200)
+                .send({ userID: user.id, userName: user.name });
         } catch (error) {
             console.timeEnd(label)
             throw new BaseException(`UserController.login: ${error.message}`, error.statusCode??400, "Bad Request", "UserLoginError");

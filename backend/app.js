@@ -5,19 +5,29 @@ const bodyParser = require("body-parser");
 const BaseException = require("./exceptions/BaseException");
 const jwtMiddleware = require("./middleware/JwtMiddleware");
 const gzipResponseMiddleware = require("./middleware/gzipResponseMiddleware");
+const { parseCookies } = require("./utils/cookieParser");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost",
+        "http://localhost:80",
+        "http://localhost:3000",
+    ],
+    credentials: true // Permite el envío de cookies
+}));
+app.use(parseCookies);
+
 const port = process.env.PORT || 8080;
 
 // 1 verificar jwt, 2 rutas, 3 middleware para comprimir respuesta, 4 manejo de excepciones
 
 // Middleware para comprimir respuesta (probar)
-app.use(gzipResponseMiddleware)
+app.use(gzipResponseMiddleware);
 
 // Middleware para manejar JWT
-// app.use(jwtMiddleware);
+app.use(jwtMiddleware); // Aquí ya puede acceder a las cookies
 
 // Rutas
 app.use("/", routes);

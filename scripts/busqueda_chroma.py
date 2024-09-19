@@ -18,7 +18,7 @@ collection_name = "embedded_categories"
 collection = chroma_client.get_collection(name=collections[0].name)
 
 # La frase que quieres buscar
-query_text = "latigos"
+query_text = "cambio Guantes Descartables de nitrilo color negros para uso gastronomico, acepto a cambio destornilladores"
 
 # Generar el embedding de la frase de búsqueda
 query_embedding = sentence_transformer_ef([query_text])
@@ -26,17 +26,12 @@ query_embedding = sentence_transformer_ef([query_text])
 # Realizar la búsqueda
 results = collection.query(
     query_embeddings=query_embedding,
-    n_results=5  # Número de resultados que quieres obtener
+    n_results=10  # Número de resultados que quieres obtener
 )
 
 print(collection.count())
 
 # Mostrar los resultados
-for result in results["ids"]:
-    print(f"Resultado encontrado: {result}")
-for result in results["distances"]:
-    print(f"Resultado encontrado: {result}")
-for result in results["metadatas"]:
-    print(f"Resultado encontrado: {result}")
+print(f"resultados para '{query_text}': ")
 for result in results["documents"]:
     print(f"Resultado encontrado: {result}")

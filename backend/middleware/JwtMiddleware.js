@@ -1,9 +1,9 @@
 const BaseException = require("../exceptions/BaseException");
 const { verifyToken } = require("../utils/jwt");
 
-// Middleware para verificar el JWT
+// Middleware para verificar el JWT desde una cookie
 async function jwtMiddleware(req, res, next) {
-    const excludedPaths = ["/user/login", "/user/register", "/user/"]; // Añade aquí las rutas que quieres excluir
+    const excludedPaths = ["/user/login", "/user/register", "/user/"]; // Rutas excluidas
 
     // Excluir ciertas rutas del middleware
     if (excludedPaths.some((path) => req.path.startsWith(path))) {
@@ -11,13 +11,20 @@ async function jwtMiddleware(req, res, next) {
     }
 
     try {
-        // Obtener el token de la cabecera de autorización
-        const token =
-            req.headers.authorization && req.headers.authorization.split(" ")[1];
+        // Obtener el token desde la cookie 'nombreCookie'
+        let token = req.cookies["nombreCookie"];
 
         if (!token) {
-            throw new BaseException("Token not provided", 401, "Unauthorized", "AuthenticationError");
+            throw new BaseException(
+                "Token not provided",
+                401,
+                "Unauthorized",
+                "AuthenticationError"
+            );
         }
+
+        // Decodificar el token (en caso de que esté URL-encoded)
+        token = decodeURIComponent(token);
 
         // Verificar el token
         const decoded = await verifyToken(token);

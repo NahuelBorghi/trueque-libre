@@ -27,7 +27,8 @@ class AppModel extends EventTarget {
         const response = await fetch(`${this._url}/user/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...user })
+            body: JSON.stringify({ ...user }),
+            credentials: 'include' // Permite el envio y recepción de cookies
         })
     
         const data = await response.json()
