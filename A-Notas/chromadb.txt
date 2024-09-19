@@ -1,0 +1,2 @@
+nahuel propuso usar una base de datos vectorial para sugerir categorias pero no tuvo buenos resultados
+ahora pensamos dejarlo para mas adelante cuando se pueda implementar un buscador de forma que las categorias pasen a ser metadatos y la descripcion sea el texto a vectorizar
