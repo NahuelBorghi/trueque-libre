@@ -2,3 +2,4 @@ db/chromadb
 db/mysql
 db/mongo
 .env
+node_modules
