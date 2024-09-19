@@ -5,7 +5,7 @@ class AppController {
 
         modelComponent.addEventListener('userRegister', () => {
             console.log('event userRegister')
-            this.onUserLogged()
+            this.onUserRegistered()
         })
         modelComponent.addEventListener('userLogin', () => {
             console.log('event userLogin')
@@ -18,6 +18,10 @@ class AppController {
     }
 
     onUserLoggedOut(){
+        this._viewComponent.renderView('login')
+    }
+
+    onUserRegistered(){
         this._viewComponent.renderView('login')
     }
 
