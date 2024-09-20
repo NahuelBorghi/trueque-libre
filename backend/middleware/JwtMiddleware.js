@@ -17,7 +17,7 @@ async function jwtMiddleware(req, res, next) {
         if (!token) {
             throw new BaseException(
                 "Token not provided",
-                401,
+                403,
                 "Unauthorized",
                 "AuthenticationError"
             );

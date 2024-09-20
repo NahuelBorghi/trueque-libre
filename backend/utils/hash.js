@@ -1,7 +1,7 @@
 const crypto = require("crypto");
-
+const salt = process.env.JWT_SECRET ?? "AguanteBoca12"
 // Función para hashear una contraseña
-function hashFunciton(password, digest = "sha512", salt = crypto.randomBytes(16).toString("hex")) {
+function hashFunciton(password, digest = "sha512") {
     const iterations = 1212;
     const keylen = 64; // Longitud de la clave generada
 
@@ -12,7 +12,7 @@ function hashFunciton(password, digest = "sha512", salt = crypto.randomBytes(16)
     return { hash, salt };
 }
 
-function verifyHash(password, hash, salt) {
+function verifyHash(password, hash) {
     const newHash = crypto
         .pbkdf2Sync(password, salt, 1212, 64, "sha512")
         .toString("hex");

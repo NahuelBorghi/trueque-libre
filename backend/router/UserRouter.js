@@ -35,4 +35,12 @@ UserRoutes.put("/logout", async (req, res, next) => {
 //     }
 // });
 
+UserRoutes.get("/verify", async (req, res, next)=>{
+    try{
+        await userController.verify(req, res);
+    } catch (error){
+        next(error);
+    }
+})
+
 module.exports = UserRoutes;

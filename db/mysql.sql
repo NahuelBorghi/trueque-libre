@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS `trueque-libre`.`Users` (
   `id` VARCHAR(50) NOT NULL COMMENT 'GUID generado automaticamente por el backend',
   `userName` VARCHAR(50) NOT NULL,
   `password` VARCHAR(128) NOT NULL,
-  `salt` VARCHAR(100) NOT NULL,
   `email` VARCHAR(150) NOT NULL,
   `state` TINYINT NULL,
   PRIMARY KEY (`id`),
@@ -45,8 +44,11 @@ CREATE TABLE IF NOT EXISTS `trueque-libre`.`Publications` (
   `idUser` VARCHAR(50) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` VARCHAR(1000) NULL,
+  `state` VARCHAR(100) NOT NULL,
   `status` VARCHAR(45) NOT NULL,
   `creationDate` DATETIME NOT NULL,
+  `ubication` VARCHAR(100) NOT NULL,
+  `exchange` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`, `idUser`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_Publications_Users_idx` (`idUser` ASC),
@@ -63,7 +65,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `trueque-libre`.`Image` (
   `id` VARCHAR(50) NOT NULL,
-  `imageRoute` VARCHAR(255) NOT NULL,
   `imageName` VARCHAR(255) NOT NULL,
   `mimetype` VARCHAR(45) NOT NULL,
   `creationDate` DATETIME NOT NULL,

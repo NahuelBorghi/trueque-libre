@@ -41,11 +41,9 @@ class ImageController {
                 }
 
                 const mimetype = file.mimetype;
-                const { hash } = hashFunciton(file.buffer, "md5");
-                console.log('hash', hash)
 
                 // Guardar el archivo utilizando el servicio
-                const imageId = await this.imageService.saveImage(file.buffer, hash, mimetype, creationUser);
+                const imageId = await this.imageService.saveImage(file.buffer, Date.now(), mimetype, creationUser);
                 console.log("Image ID:", imageId);
 
                 res.status(201).json({ message: 'Imagen guardada exitosamente.', imageId });

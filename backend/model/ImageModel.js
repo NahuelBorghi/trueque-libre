@@ -4,7 +4,6 @@ class Image {
     constructor(imageName, imageRoute, mimetype, creationUser, id = null, creationDate = new Date()) {
         this.id = id || generateId();
         this.imageName = imageName;
-        this.imageRoute = imageRoute;
         this.mimetype = mimetype;
         this.creationDate = creationDate;
         this.creationUser = creationUser;
