@@ -56,6 +56,9 @@ class UserController {
             throw new BaseException(`UserController.logout: ${error.message}`, error.statusCode??400, "Bad Request", "UserLogoutError");
         }
     }
+    async verify(req, res){
+        res.status(200)
+    }
 }
 
 module.exports = UserController;

@@ -1,0 +1,2 @@
+hashear los nombres de las imagenes en base a su contenido sirve para cuando distintos usuarios suban la misma imagen, poder referenciarlas en vez de subir duplicados
+esto optimiza el uso de almacenamiento

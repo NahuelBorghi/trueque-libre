@@ -15,11 +15,20 @@ class ImageService {
     async saveImage(fileBuffer, name, mimetype, creationUser) {
         try {
             const imageDirectory = `${__dirname}/../images/${creationUser}`
-            const image = new Image(name, `${imageDirectory}/${name}`, mimetype, creationUser);
+            const image = new Image(name, mimetype, creationUser);
 
             console.log('image', image);
 
             console.log('fs.existsSync(`${__dirname}/../images/${creationUser}`)', fs.existsSync(imageDirectory))
+
+            zlib.gzip(fileBuffer, (err, buffer) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(buffer.length);
+                    fileBuffer = buffer;
+                }
+            });
 
             await this.mysqlRepository.insertImage(image);
 
@@ -62,14 +71,26 @@ class ImageService {
             if (result == null) {
                 return null;
             }
-            
-            const image = new Image(result.imageName, result.imageRoute, result.mimetype, result.creationUser, result.id, result.creationDate);
 
-            if(!fs.existsSync(image.imageRoute)){
+            
+            const image = new Image(result.imageName, result.mimetype, result.creationUser, result.id, result.creationDate);
+
+            
+            const imageRoute = `${__dirname}/../images/${creationUser}/${image.imageName}`
+
+            if(!fs.existsSync(imageRoute)){
                 throw new BaseException("Image doesn't exists", 400, "Probablly been deleted", "Image doesn't exist")
             }
 
-            const imageCoppied = fs.readFileSync(image.imageRoute)
+            const imageCoppied = fs.readFileSync(imageRoute)
+            zlib.gzip(imageCoppied, (err, buffer) => {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log(buffer.length);
+                    imageCoppied = buffer;
+                }
+            });
             console.log('imageCoppied', imageCoppied)
             
             return {...image, image: imageCoppied};
