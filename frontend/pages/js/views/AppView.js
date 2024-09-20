@@ -2,17 +2,19 @@ import { AppController } from '../controllers/AppController.js'
 import { LoginView } from './LoginView.js';
 import { PublicationView } from './PublicationView.js';
 import { RegisterView } from './RegisterView.js';
+import { LoadingView } from './LoadingView.js';
 
 class AppView extends HTMLElement {
     constructor(modelComponent) {
         super();
         this._innerControler = new AppController(this, modelComponent);
+        this._loadingView = new LoadingView(modelComponent)
         this._registerView = new RegisterView(modelComponent)
         this._loginView = new LoginView(modelComponent)
         this._publicationView = new PublicationView(modelComponent)
 
-        this._renderComponent = this._loginView
-        document.title = 'Login'
+        this._renderComponent = this._loadingView
+        document.title = 'Trueque Libre'
 
         this.appendChild(this._renderComponent)
     }
@@ -20,6 +22,11 @@ class AppView extends HTMLElement {
     renderView(view){
         this.removeChild(this._renderComponent)
         switch (view) {
+            case 'loading':
+            {
+                document.title = 'Trueque Libre'
+                this._renderComponent = this._loadingView
+            }
             case 'register':
             {
                 document.title = 'Register'
