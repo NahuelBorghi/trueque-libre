@@ -26,7 +26,9 @@ class RegisterController {
 
         if(data.status === "error"){
             this._viewComponent.updateErrorLabel(data.message)
+            return
         }
+        this._viewComponent.resetFields()
     }
 }
 

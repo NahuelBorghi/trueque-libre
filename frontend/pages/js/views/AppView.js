@@ -55,9 +55,11 @@ class AppView extends HTMLElement {
 
     connectedCallback(){
         this._loginView._linkRegister.onclick = () => {
+            this._loginView.resetFields()
             this._innerControler.onPressRegisterTag()
         }
         this._registerView._linkLogin.onclick = () => {
+            this._registerView.resetFields()
             this._innerControler.onPressLoginTag()
         }
     }

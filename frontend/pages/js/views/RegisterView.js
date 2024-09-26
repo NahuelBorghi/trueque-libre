@@ -144,6 +144,15 @@ class RegisterView extends HTMLElement {
         return this._inputEmail.value
     }
 
+    resetFields(){
+        this._inputEmail.value = ''
+        this._inputPassword.value = ''
+        this._inputUsername.value = ''
+        this._labelEmailError.innerText = ''
+        this._labelPasswordError.innerText = ''
+        this._labelUsernameError.innerText = ''
+    }
+
     updateErrorLabel(errorMessage){
         this._labelEmailError.innerText = errorMessage
         this._labelPasswordError.innerText = errorMessage
