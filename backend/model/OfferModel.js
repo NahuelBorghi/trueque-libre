@@ -1,32 +1,27 @@
 const generateId = require("../utils/UUID.js");
 
-class Publication {
+class Offer {
     constructor(
-        idUser,
-        title,
+        idUser, //id del usuario que crea la oferta
+        chatId, //id del chat
+        imageId, //id de la unica imagen
         description,
-        ubication,
-        creationUser,
         modificationUser = null,
         modificationDate = null,
         creationDate = new Date(),
-        state = "created", // created, published, closed
-        status = "active", // active, inactive
+        state = "offered", // offered, denied, chat, accepted, closed
         id = generateId()
     ) {
         this.id = id;
-        this.idUser = idUser;
-        this.title = title;
+        this.chatId = chatId;
+        this.imageId = imageId;
         this.description = description;
         this.state = state;
-        this.status = status;
-        this.ubication = ubication;
-        this.exchange = exchange;
         this.creationDate = creationDate;
-        this.creationUser = creationUser;
+        this.creationUser = idUser;
         this.modificationDate = modificationDate;
         this.modificationUser = modificationUser;
     }
 }
 
-module.exports = Publication;
+module.exports = Offer;

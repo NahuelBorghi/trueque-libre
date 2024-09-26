@@ -39,6 +39,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `trueque-libre`.`Publications`
 -- -----------------------------------------------------
+
+-- revisar esquema, faltan los tags
 CREATE TABLE IF NOT EXISTS `trueque-libre`.`Publications` (
   `id` VARCHAR(50) NOT NULL,
   `idUser` VARCHAR(50) NOT NULL,
