@@ -6,15 +6,17 @@ async function jwtMiddleware(req, res, next) {
     const excludedPaths = ["/user/login", "/user/register", "/user/"]; // Rutas excluidas
 
     // Excluir ciertas rutas del middleware
-    if (excludedPaths.some((path) => req.path.startsWith(path))) {
+    if (excludedPaths.some((path) => req.path.startsWith(path) && !req.path.startsWith('/user/verify'))) {
+        console.log('excludedPath', req.path)
         return next();
     }
 
     try {
         // Obtener el token desde la cookie 'nombreCookie'
         let token = req.cookies["nombreCookie"];
-
+        console.log('token', token)
         if (!token) {
+            console.log('no token')
             throw new BaseException(
                 "Token not provided",
                 403,
@@ -31,7 +33,8 @@ async function jwtMiddleware(req, res, next) {
         req.user = decoded; // Almacenar el payload decodificado en req.user
         next();
     } catch (error) {
-        next(error);
+        console.log('error token', error)
+        res.status(error.statusCode).send(error)
     }
 }
 
