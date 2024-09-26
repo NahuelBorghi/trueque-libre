@@ -3,7 +3,7 @@ import { LoadingController } from '../controllers/LoadingController.js'
 class LoadingView extends HTMLElement {
     constructor(modelComponent) {
         super();
-        this._innerControler = new LoadingController(this, modelComponent);
+        this._innerController = new LoadingController(this, modelComponent);
 
         this._container = document.createElement('div')
         this._container.style = 'width: 100vw; height: 100vh'
@@ -18,7 +18,7 @@ class LoadingView extends HTMLElement {
     }
 
     connectedCallback(){
- // this._innerController.init()
+        this._innerController.init()
     }
 
     disconnectedCallback(){  

@@ -12,7 +12,17 @@ class AppController {
             this.onUserLogged()
         })
         modelComponent.addEventListener('userLogout', () => {
-            console.log('event userLogin')
+            console.log('event userLogout')
+            this.onUserLoggedOut()
+        })
+        modelComponent.addEventListener('tokenVerify', (e) => {
+            console.log('event tokenVerify', e.detail)
+
+            if(e.status === 200){
+                this.onUserLogged()
+                return
+            }
+
             this.onUserLoggedOut()
         })
     }

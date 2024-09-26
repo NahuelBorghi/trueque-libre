@@ -40,12 +40,13 @@ class AppModel extends EventTarget {
         console.log('data', data)
         return data
     }
-
+ 
     async logout(){
         console.log('idUser', this._idUser)
         const response = await fetch(`${this._url}/user/logout`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Permite el envio y recepción de cookies
             body: JSON.stringify({ idUser: this._idUser })
         })
 
@@ -56,6 +57,15 @@ class AppModel extends EventTarget {
         }
         console.log('data', data)
         return data
+    }
+
+    async verify(){
+        console.log('verify')
+        const response = await fetch(`${this._url}/user/verify`, {
+            credentials: 'include', // Permite el envio y recepción de cookies
+        })
+        console.log('first')
+        this.dispatchEvent(new CustomEvent('tokenVerify', { detail: response }))
     }
 }
 

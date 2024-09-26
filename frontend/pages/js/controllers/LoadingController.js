@@ -5,7 +5,7 @@ class LoadingController {
     }
 
     init(){
-        // this._modelComponent.verify() // continue thiss
+        this._modelComponent.verify() 
     }
 }
 
