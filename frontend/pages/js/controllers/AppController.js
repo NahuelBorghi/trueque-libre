@@ -17,8 +17,8 @@ class AppController {
         })
         modelComponent.addEventListener('tokenVerify', (e) => {
             console.log('event tokenVerify', e.detail)
-
-            if(e.status === 200){
+            
+            if(e.detail.status === 200){
                 this.onUserLogged()
                 return
             }
