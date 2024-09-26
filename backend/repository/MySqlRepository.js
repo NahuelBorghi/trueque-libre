@@ -31,7 +31,7 @@ class MySqlRepository {
     async createUser(userName, password, email) {
         const { hash, salt } = hashFunciton(password);
         const newUser = new User(userName, hash,  email);
-        const query = `INSERT INTO Users (id, userName, password,  email, state) VALUES (?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO Users (id, userName, password, email, state) VALUES (?, ?, ?, ?, ?)`;
         try {
             const [result] = await this.connection.execute(query, [newUser.id, newUser.userName, newUser.password, newUser.email, newUser.state]);
             return result.affectedRows;
