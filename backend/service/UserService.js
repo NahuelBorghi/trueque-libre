@@ -21,7 +21,7 @@ class UserService {
     async logInUser(userName, password) {
         try {
             const user = await this.mysqlRepository.getUserByUserName(userName);
-            if (!user.userName) {
+            if (!user) {
                 throw new BaseException('User not found', 404, "Not Found", "UserNotFoundError");
             } else if (!verifyHash(password, user.password, user.salt)) {
                 throw new BaseException(`Invalid password`, 401, "Bad Request", "UserLoginError");

@@ -71,8 +71,10 @@ class MySqlRepository {
         const query = `SELECT * FROM Users WHERE userName = ?`;
         try {
             const [[result]] = await this.connection.execute(query, [userName]);
-            const user = new User(result.userName, result.password, result.salt, result.email, result.setup, result.id);
-            return user;
+            if(result){
+                const user = new User(result.userName, result.password, result.salt, result.email, result.setup, result.id);
+                return user;
+            }
         }catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getUserByUserName: ${error.message}`, 400, "Bad Request", "UserCreationError");
