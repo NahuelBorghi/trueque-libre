@@ -23,7 +23,7 @@ class UserService {
             const user = await this.mysqlRepository.getUserByUserName(userName);
             if (!user.userName) {
                 throw new BaseException('User not found', 404, "Not Found", "UserNotFoundError");
-            } else if (!verifyHash(password, user.password, user.salt)) {
+            } else if (!verifyHash(password, user.password)) {
                 throw new BaseException(`Invalid password`, 401, "Bad Request", "UserLoginError");
             }
             const userLogged = await this.mysqlRepository.updateUserState(user.id, true);
