@@ -127,6 +127,13 @@ class LoginView extends HTMLElement {
         this._labelUsernameError.innerText = errorMessage
     }
 
+    resetFields(){
+        this._inputPassword.value = ''
+        this._inputUsername.value = ''
+        this._labelPasswordError.innerText = ''
+        this._labelUsernameError.innerText = ''
+    }
+
     connectedCallback(){
         this._inputCheckbox.onchange = () => {
             this._innerControler.onClickCheckbox(this._inputCheckbox.checked)
