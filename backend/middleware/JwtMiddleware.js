@@ -12,8 +12,8 @@ async function jwtMiddleware(req, res, next) {
     }
 
     try {
-        // Obtener el token desde la cookie 'nombreCookie'
-        let token = req.cookies["nombreCookie"];
+        // Obtener el token desde la cookie 'Authentication'
+        let token = req.cookies["Authentication"];
         console.log('token', token)
         if (!token) {
             console.log('no token')
@@ -33,8 +33,7 @@ async function jwtMiddleware(req, res, next) {
         req.user = decoded; // Almacenar el payload decodificado en req.user
         next();
     } catch (error) {
-        console.log('error token', error)
-        res.status(error.statusCode).send(error)
+        next(error);
     }
 }
 
