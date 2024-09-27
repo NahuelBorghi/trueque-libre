@@ -45,8 +45,8 @@ class UserController {
         const label = `-------------------- User logout - ${Date.now()}`;
         console.time(label);
         try {
-            const { idUser } = req.body;
-            await this.userService.logOutUser(idUser);
+            const { id } = req.user;
+            await this.userService.logOutUser(id);
             console.timeLog(label, "user logged out successfully");
             console.timeEnd(label);
             return res.status(200).send({ message: 'User logged out' });
