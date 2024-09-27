@@ -30,12 +30,12 @@ class MySqlRepository {
     // User methods
     async createUser(userName, password, email) {
         const { hash, salt } = hashFunciton(password);
-        const newUser = new User(userName, hash,  email);
+        const newUser = new User(userName, hash, email);
         const query = `INSERT INTO Users (id, userName, password, email, state) VALUES (?, ?, ?, ?, ?)`;
         try {
             const [result] = await this.connection.execute(query, [newUser.id, newUser.userName, newUser.password, newUser.email, newUser.state]);
             return result.affectedRows;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.createUser: ${error.message}`, error.statusCode ?? 400, "Bad Request", "UserCreationError");
         }
@@ -47,7 +47,7 @@ class MySqlRepository {
             const [[result]] = await this.connection.execute(query, [id]);
             const user = new User(result.userName, result.password, result.email, result.state, result.id);
             return user;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getUserById: ${error.message}`, error.statusCode ?? 400, "Bad Request", "UserCreationError");
         }
@@ -57,11 +57,11 @@ class MySqlRepository {
         const query = `SELECT * FROM Users WHERE id = ? AND state = 1`;
         try {
             const [[result]] = await this.connection.execute(query, [id]);
-            if(result){
+            if (result) {
                 const user = new User(result.userName, result.password, result.email, result.state, result.id);
                 return user;
             }
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getUserLoggedById: ${error.message}`, error.statusCode ?? 400, "Bad Request", "UserCreationError");
         }
@@ -76,7 +76,7 @@ class MySqlRepository {
             }
             const user = new User(result.userName, result.password, result.email, result.setup, result.id);
             return user;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getUserByUserName: ${error.message}`, error.statusCode ?? 400, "Bad Request", "UserCreationError");
         }
@@ -84,11 +84,11 @@ class MySqlRepository {
 
     async updateUserState(id, state) {
         const query = `UPDATE Users SET state = ? WHERE id = ?`;
-        try{
+        try {
             await this.connection.execute(query, [state, id])
             const user = await this.getUserLoggedById(id);
             return user
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.updateUserState: ${error.message}`, error.statusCode ?? 400, "Bad Request", "UserCreationError");
         }
@@ -112,7 +112,7 @@ class MySqlRepository {
                 ]
             );
             return result.insertId;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.createPublication: ${error.message}`, error.statusCode ?? 400, "Bad Request", "PublicationCreationError");
         }
@@ -134,7 +134,7 @@ class MySqlRepository {
         try {
             const [[result]] = await this.connection.execute(query, [id]);
             return result;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getPublicationById: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetPublicationError");
         }
@@ -145,7 +145,7 @@ class MySqlRepository {
         try {
             const [result] = await this.connection.execute(query, [idUser]);
             return result;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getPublicationsByUserId: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetPublicationsError");
         }
@@ -177,7 +177,7 @@ class MySqlRepository {
         try {
             const [result] = await this.connection.execute(query, [id]);
             return result.affectedRows;
-        }catch (error) {
+        } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.deletePublication: ${error.message}`, error.statusCode ?? 400, "Bad Request", "DeletePublicationError");
         }
@@ -190,7 +190,7 @@ class MySqlRepository {
 
 
     // Image methods
-    async insertImage ({ id, imageName, imageRoute, mimetype, creationDate, creationUser }){
+    async insertImage({ id, imageName, imageRoute, mimetype, creationDate, creationUser }) {
         const query = ` INSERT INTO Image (id, imageName, imageRoute, mimetype, creationDate, creationUser) VALUES (?, ?, ?, ?, ?, ?); `;
         const validationQuery = `SELECT id FROM Users WHERE id = ?`;
         try {
@@ -198,7 +198,7 @@ class MySqlRepository {
             if (validation.length === 0) {
                 throw new BaseException("User not found", 404, "Not Found", "UserNotFound");
             }
-            console.log({id, imageName, imageRoute, mimetype, creationDate, creationUser})
+            console.log({ id, imageName, imageRoute, mimetype, creationDate, creationUser })
             await this.connection.execute(query, [id, imageName, imageRoute, mimetype, creationDate, creationUser]);
         } catch (error) {
             console.error(error);
@@ -229,8 +229,9 @@ class MySqlRepository {
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getTags: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetTagsError");
-    }
+        }
     
+    }
 }
 
 module.exports = MySqlRepository;
