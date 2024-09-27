@@ -2,7 +2,6 @@ const generateId = require("../utils/UUID.js");
 
 class Publication {
     constructor(
-        idUser,
         title,
         description,
         ubication,
@@ -15,7 +14,6 @@ class Publication {
         id = generateId()
     ) {
         this.id = id;
-        this.idUser = idUser;
         this.title = title;
         this.description = description;
         this.state = state;

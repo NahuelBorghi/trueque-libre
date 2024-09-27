@@ -96,13 +96,14 @@ class MySqlRepository {
 
     // Publication methods
     async createPublication(publication) {
-        const query = `INSERT INTO Publication (id, title, description, status, creationDate, creationUser, modificationDate, modificationUser) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO Publication (id, idUser, title, description, state, status, creationDate, creationUser, modificationDate, modificationUser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         try {
             const [result] = await this.connection.execute(query,
                 [
                     publication.id,
                     publication.title,
                     publication.description,
+                    publication.state,
                     publication.status,
                     publication.creationDate,
                     publication.creationUser,
@@ -114,6 +115,71 @@ class MySqlRepository {
         }catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.createPublication: ${error.message}`, error.statusCode ?? 400, "Bad Request", "PublicationCreationError");
+        }
+    }
+
+    async getPublications(limit, offset) {
+        const query = `SELECT *, COUNT(*) OVER() as total FROM Publication LIMIT ? OFFSET ?`;
+        try {
+            const [result] = await this.connection.execute(query, [limit, offset]);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.getPublications: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetPublicationsError");
+        }
+    }
+
+    async getPublicationById(id) {
+        const query = `SELECT * FROM Publication WHERE id = ?`;
+        try {
+            const [[result]] = await this.connection.execute(query, [id]);
+            return result;
+        }catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.getPublicationById: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetPublicationError");
+        }
+    }
+
+    async getPublicationsByUserId(idUser) {
+        const query = `SELECT * FROM Publication WHERE idUser = ?`;
+        try {
+            const [result] = await this.connection.execute(query, [idUser]);
+            return result;
+        }catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.getPublicationsByUserId: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetPublicationsError");
+        }
+    }
+
+    async updatePublicationState(publication) {
+        const query = "UPDATE Publication SET title = ?, description = ?, state = ?, status = ?, modificationDate = ?, modificationUser = ? WHERE id = ?";
+        try {
+            const [result] = await this.connection.execute(query,
+                [
+                    publication.title,
+                    publication.description,
+                    publication.state,
+                    publication.status,
+                    publication.modificationDate,
+                    publication.modificationUser,
+                    publication.id
+                ]
+            );
+            return result.insertId;
+        } catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.updatePublicationState: ${error.message}`, error.statusCode ?? 400, "Bad Request", "UpdatePublicationState");
+        }
+    }
+
+    async deletePublication(id) {
+        const query = `DELETE FROM Publication WHERE id = ?`;
+        try {
+            const [result] = await this.connection.execute(query, [id]);
+            return result.affectedRows;
+        }catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.deletePublication: ${error.message}`, error.statusCode ?? 400, "Bad Request", "DeletePublicationError");
         }
     }
 
@@ -152,6 +218,17 @@ class MySqlRepository {
             console.error(error);
             throw new BaseException(`mysqlRepository.getImageById: ${error.message}`, error.statusCode ?? 400, "Bad Request", "ImageRetrievalError");
         }
+    }
+
+    // Tag methods
+    async getTags(limit, offset) {
+        const query = `SELECT *, COUNT(*) OVER() as total FROM Tags LIMIT ? OFFSET ?`;
+        try {
+            const [result] = await this.connection.execute(query, [limit, offset]);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.getTags: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetTagsError");
     }
     
 }
