@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <input type="file" id="fileInput" accept=".jpg, .jpeg, .png" />
+        <input type="text" id="creationUser" placeholder="Usuario de creación" maxlength="150" />
+        <input type="text" id="titulo" placeholder="Titulo" maxlength="150" />
+        <select id="select-categoria">
+            <option>Categoría</option>
+            <option value="Vehículos">Vehículos</option>
+            <option value="Electrónica">Electrónica</option>
+            <option value="Ropa">Ropa</option>
+        </select>
+        <select id="select-estado">
+            <option>Estado</option>
+            <option value="Nuevo">Nuevo</option>
+            <option value="Usado - Como nuevo">Usado - Como nuevo</option>
+            <option value="Usado - Buen estado">Usado - Buen estado</option>
+            <option value="Usado - Aceptable">Usado - Aceptable</option>
+        </select>
+        <button id="uploadButton">Publicar</button>
+        <button id="uploadBorrador">Guardar Borrador</button>
+
+        <script>
+            console.log("aló");
+
+            const fileInput = document.getElementById("fileInput");
+            const creationUser = document.getElementById("creationUser").value;
+            const titulo = document.getElementById("titulo").value;
+
+            document.getElementById("uploadButton").addEventListener("click", () => {
+                console.log("fileInput", fileInput.files[0]);
+                console.log("creationUser", creationUser);
+                console.log("titulo", titulo);
+                console.log("select-categoria", document.getElementById("select-categoria").value);
+                console.log("select-estado", document.getElementById("select-estado").value);
+            });
+
+            document.getElementById("uploadBorrador").addEventListener("click", () => {
+                console.log("fileInput", fileInput.files[0]);
+                console.log("creationUser", creationUser);
+                console.log("titulo", titulo);
+                console.log("select-categoria", document.getElementById("select-categoria").value);
+                console.log("select-estado", document.getElementById("select-estado").value);
+            });
+        </script>
+    </body>
+</html>
