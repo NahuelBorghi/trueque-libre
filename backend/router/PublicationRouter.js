@@ -9,29 +9,41 @@ PublicationRoutes.post("/", async (req, res, next) => {
         next(error);
     }
 });
-//
-// PublicationRoutes.post("/", async (req, res, next) => {
+PublicationRoutes.get("/", async (req, res, next) => {
+    try {
+        await publicationController.get(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+PublicationRoutes.get("/:id", async (req, res, next) => {
+    try {
+        await publicationController.getById(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+PublicationRoutes.get("/user/:idUser", async (req, res, next) => {
+    try {
+        await publicationController.getByUserId(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+PublicationRoutes.put("/", async (req, res, next) => {
+    try {
+        await publicationController.update(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+// PublicationRoutes.delete("/:id", async (req, res, next) => {
 //     try {
-//         await publicationController.login(req, res);
+//         await publicationController.delete(req, res);
 //     } catch (error) {
 //         next(error);
 //     }
 // });
-//
-// PublicationRoutes.put("/", async (req, res, next) => {
-//     try {
-//         await publicationController.update(req, res);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
-//
-// PublicationRoutes.delete("/", async (req, res, next) => {
-//     try {
-//         await PublicationController.delete(req, res);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+
 
 module.exports = PublicationRoutes;
