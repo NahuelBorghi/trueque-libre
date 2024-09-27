@@ -34,7 +34,7 @@ class UserController {
             console.timeLog(label, "user logged in successfully");
             console.timeEnd(label);
             return res
-                .cookie('Authentication', token, { httpOnly: true, path: '/', sameSite: 'Lax', maxAge: 60*60*24*1000 })  // 60 segundos * 60 minutos * 1 hora * 1000 milisegundos
+                .cookie('Authentication', token, { httpOnly: false, path: '/', sameSite: 'Lax', maxAge: 60*60*24*1000 })  // 60 segundos * 60 minutos * 1 hora * 1000 milisegundos
                 .send({ userID: user.id, userName: user.name });
         } catch (error) {
             console.timeEnd(label)
