@@ -18,3 +18,5 @@ class TagService {
         }
     }
 }
+
+module.exports = TagService;

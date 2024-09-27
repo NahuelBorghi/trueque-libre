@@ -1,2 +1,4 @@
 hashear los nombres de las imagenes en base a su contenido sirve para cuando distintos usuarios suban la misma imagen, poder referenciarlas en vez de subir duplicados
 esto optimiza el uso de almacenamiento
+
+hacer singleton de los repositorios. por ej mysql repository se inicia una instancia por cada controlador que tenemos

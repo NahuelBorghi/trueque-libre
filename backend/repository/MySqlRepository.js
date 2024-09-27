@@ -10,7 +10,8 @@ class MySqlRepository {
     }
 
     async setup() {
-        console.time('MySqlRepository setup');
+        const label = `-------------------- MySqlRepository setup - ${Date.now()}`;
+        console.time(label);
         const env = {
             host: process.env.DATABASE_HOST || "FALTA VARIABLE DE ENTORNO DATABASE_HOST",
             user: process.env.DATABASE_USER || "FALTA VARIABLE DE ENTORNO DATABASE_USER",
@@ -19,12 +20,11 @@ class MySqlRepository {
         };
         try {
             this.connection = await createConnection(env);
-            console.timeLog('MySqlRepository setup', 'MySqlConnection setup complete');
-            console.timeEnd('MySqlRepository setup');
+            console.timeLog(label, 'MySqlConnection setup complete');
         } catch (error) {
             console.error(error);
-            console.timeEnd('MySqlRepository setup');
         }
+        console.timeEnd(label);
     }
     
     // User methods
