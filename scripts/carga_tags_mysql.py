@@ -6,7 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Carga el archivo .env un nivel más arriba del directorio del script
-env_path = Path('..') / '.env'
+env_path = Path('../') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 # Obtiene las variables de entorno
