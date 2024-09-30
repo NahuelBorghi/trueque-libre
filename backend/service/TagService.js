@@ -12,7 +12,7 @@ class TagService {
 
     async getTags(limit, offset) {
         try {
-            return await this.mysqlRepository.getTags(limit, offset);
+            return await this.mysqlRepository.getTagsFixed(limit, offset);
         } catch (error) {
             throw new BaseException(`getTagsService: ${error.message}`, 400, "Bad Request", "GetTagsError");
         }

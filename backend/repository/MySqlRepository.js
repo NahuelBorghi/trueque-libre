@@ -223,9 +223,29 @@ class MySqlRepository {
     // Tag methods
     async getTags(limit, offset) {
         const query = `SELECT *, COUNT(*) OVER() as total FROM Tags LIMIT ? OFFSET ?`;
+        console.log(await this.connection.execute('SELECT VERSION()'))
         try {
             const [result] = await this.connection.execute(query, [limit, offset]);
             return result;
+        } catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.getTags: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetTagsError");
+        }
+    
+    }
+
+    // Tag methods
+    async getTagsFixed(limit, offset) {
+        // const query = `SELECT *, COUNT(*) OVER() as total FROM Tags LIMIT ? OFFSET ?`;
+        // console.log(await this.connection.execute('SELECT VERSION()'))
+        const queryData = `SELECT * FROM Tags LIMIT ? OFFSET ?`;
+            const queryTotal = `SELECT COUNT(*) as total FROM Tags`;
+            try {
+            const [data] = await this.connection.execute(queryData, [limit, offset]);
+            const [total] = await this.connection.execute(queryTotal);
+            console.log('data', data)
+            console.log('total', total)
+            return data;
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getTags: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetTagsError");
