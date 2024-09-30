@@ -49,7 +49,7 @@ class UserController {
             await this.userService.logOutUser(id);
             console.timeLog(label, "user logged out successfully");
             console.timeEnd(label);
-            return res.status(200).send({ message: 'User logged out' });
+            return res.status(200).clearCookie('Authentication').send({ message: 'User logged out' });
         } catch (error) {
             console.timeEnd(label)
             throw new BaseException(`UserController.logout: ${error.message}`, error.statusCode??400, "Bad Request", "UserLogoutError");
