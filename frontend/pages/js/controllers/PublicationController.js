@@ -11,6 +11,15 @@ class PublicationController {
             alert(data.message)
         }
     }
+
+    async getCategories(){
+        console.log('getCategories')
+        const data = await this._modelComponent.getCategories()
+        if(data.status === "error"){
+            alert(data.message)
+        }
+        return data
+    }
 }
 
 export { PublicationController }

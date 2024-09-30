@@ -67,6 +67,17 @@ class AppModel extends EventTarget {
         console.log('first')
         this.dispatchEvent(new CustomEvent('tokenVerify', { detail: response }))
     }
+
+    async getCategories(){
+        console.log('getCategories')
+        const response = await fetch(`${this._url}/tags?limit=6472&offset=0`, {
+            credentials: 'include', // Permite el envio y recepción de cookies
+        })
+        
+        const data = await response.json()
+
+        return data
+    }
 }
 
 export { AppModel }
