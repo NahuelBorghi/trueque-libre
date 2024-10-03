@@ -20,6 +20,10 @@ class PublicationController {
         }
         return data
     }
+
+    onClickCategorie({detail}) {
+        console.log(detail)
+    }
 }
 
 export { PublicationController }
