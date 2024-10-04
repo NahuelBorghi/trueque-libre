@@ -78,6 +78,15 @@ class AppModel extends EventTarget {
 
         return data.data
     }
+
+    async getPublications(){
+        console.log('getPublications')
+        const response = await fetch(`${this._url}/publication?limit=6472&offset=0`, {
+            credentials: 'include', // Permite el envio y recepción de cookies
+        })
+        
+        return await response.json()
+    }
 }
 
 export { AppModel }

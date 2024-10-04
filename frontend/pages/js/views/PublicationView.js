@@ -87,6 +87,8 @@ class PublicationView extends HTMLElement {
         this._sideBarContainer.appendChild(this._sideBarCategoriesContainer);
 
         this._publicationsContainer = document.createElement("div");
+        this._publicationsContainer.className = 'bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3'
+        this._publicationsContainer.style = 'width: 80%; overflow: auto; height: 100%'
 
         this._container.appendChild(this._sideBarContainer);
         this._container.appendChild(this._publicationsContainer);
@@ -97,9 +99,28 @@ class PublicationView extends HTMLElement {
 
     connectedCallback() {
         this.getCategories();
+        this.getPublications();
         this._navButtonLogout.onclick = () => {
             this._innerControler.onPressSignOut();
         };
+    }
+
+    transformPublications(publications){
+        const newArray = []
+        const grupos = 5
+        for (let i = 0; i < publications.length; i += grupos) {
+            newArray.push(publications.slice(i, i + grupos));
+        }
+
+        return newArray
+    }
+
+    async getPublications() {
+        const { data: publications, total} = await this._innerControler.getPublications();
+        if (publications && publications.length > 0) {
+            const transformedData = this.transformPublications(publications)
+            this.createPublicationsCard(transformedData, Math.round(total[0].total / 5));
+        }
     }
 
     async getCategories() {
@@ -121,6 +142,55 @@ class PublicationView extends HTMLElement {
             };
             this._sideBarCategoriesContainer.appendChild(button);
         });
+    }
+
+    createPublicationsCard(publications, amountRows) {
+        publications.forEach((publicationRow) => {
+            const rowContainer = document.createElement('div')
+            rowContainer.className = 'row justify-content-between column-gap-3'
+            publicationRow.forEach((publication) => {
+                const containerColumn = document.createElement('div')
+                containerColumn.className = 'col'
+                containerColumn.id = publication.id
+
+                const containerCard = document.createElement('div')
+                containerCard.className = 'card'
+                containerCard.style = 'width: 16rem'
+
+                const image = document.createElement('img')
+                image.className = 'card-img-top'
+                image.src = 'https://media.istockphoto.com/id/1496378856/es/foto/mostrar-el-smartphone-durante-la-conferencia.jpg?s=2048x2048&w=is&k=20&c=SvMzrj9vTqIs__fauYNimKkawTdXCn9-NXCIBRyXDWk='
+
+                const content = document.createElement('div')
+                content.className = 'card-body'
+
+                const title = document.createElement('h5')
+                title.className = 'card-title'
+                title.innerText = publication.title
+
+                const description = document.createElement('p')
+                description.className = 'card-text'
+                description.innerText = publication.description
+
+                const button = document.createElement("button");
+
+                button.className = "btn btn-primary";
+                button.innerText = 'Visualizar';
+                // button.onclick = () => {
+                //     this._innerControler.onClickCategorie(new CustomEvent("categoriePress", { detail: categorie }));
+                // };
+
+                content.appendChild(title)
+                content.appendChild(description)
+                content.appendChild(button)
+                containerCard.appendChild(image)
+                containerCard.appendChild(content)
+                containerColumn.appendChild(containerCard)
+                rowContainer.appendChild(containerColumn)
+            });
+
+            this._publicationsContainer.appendChild(rowContainer)
+        })
     }
 
     disconnectedCallback() {}

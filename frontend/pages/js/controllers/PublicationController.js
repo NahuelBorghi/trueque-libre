@@ -21,6 +21,16 @@ class PublicationController {
         return data
     }
 
+    async getPublications(){
+        console.log('getPublications')
+        const data = await this._modelComponent.getPublications()
+        console.log('data', data)
+        if(data.status === "error"){
+            alert(data.message)
+        }
+        return data
+    }
+
     onClickCategorie({detail}) {
         console.log(detail)
     }
