@@ -44,6 +44,8 @@ class PublicationController {
         console.time(label);
         try {
             const { limit, offset } = req.query;
+            limit = limit ? parseInt(limit) : 10;
+            offset = offset ? parseInt(offset)*limit : 0;
             const publications = await this.publicationService.getPublications(limit, offset);
             console.timeLog(label, "publications retrieved successfully");
             console.timeEnd(label);
