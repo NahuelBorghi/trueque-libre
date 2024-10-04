@@ -119,9 +119,9 @@ class MySqlRepository {
     }
 
     async getPublications(limit, offset) {
-        const queryData = `SELECT * FROM Publication LIMIT ? OFFSET ?`;
-        const queryTotal = `SELECT COUNT(*) as total FROM Publication`;
-        console.log(await this.connection.execute("SELECT VERSION()"));
+        const queryData = `SELECT * FROM Publications LIMIT ? OFFSET ?`;
+        const queryTotal = `SELECT COUNT(*) as total FROM Publications`;
+        // console.log(await this.connection.execute("SELECT VERSION()"));
         try {
             // promise.all para ejecutar las dos consultas en paralelo ;)
             const res = Promise.all([
