@@ -76,7 +76,7 @@ class AppModel extends EventTarget {
         
         const data = await response.json()
 
-        return data
+        return data.data
     }
 }
 

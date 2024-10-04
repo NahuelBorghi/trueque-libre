@@ -26,7 +26,7 @@ conexion = mysql.connector.connect(
 cursor = conexion.cursor()
 
 # Ruta al archivo JSON con las categorías
-input_json_path = 'categories.json'
+input_json_path = 'categorias_filtradas.json'
 
 # Leer el archivo JSON con las categorías
 with open(input_json_path, 'r', encoding="utf-8") as file:
