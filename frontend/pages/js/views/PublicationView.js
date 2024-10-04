@@ -3,6 +3,9 @@ import { PublicationController } from "../controllers/PublicationController.js";
 class PublicationView extends HTMLElement {
     constructor(modelComponent) {
         super();
+
+        this.categories = [];
+
         this._innerControler = new PublicationController(this, modelComponent);
 
         this._navContainer = document.createElement("nav");
@@ -77,7 +80,11 @@ class PublicationView extends HTMLElement {
         this._sideBarCategoriesTitle = document.createElement("h4");
         this._sideBarCategoriesTitle.innerText = "Categorías";
 
+        this._sideBarCategoriesSearch = document.createElement("input");
+        this._sideBarCategoriesSearch.placeholder = "Buscar categoría";
+
         this._sideBarCategoriesContainer.appendChild(this._sideBarCategoriesTitle);
+        this._sideBarCategoriesContainer.appendChild(this._sideBarCategoriesSearch);
 
         this._sideBarContainer.appendChild(this._sideBarTitle);
         this._sideBarContainer.appendChild(this._sideBarButtonsContainer);
@@ -103,6 +110,9 @@ class PublicationView extends HTMLElement {
         this._navButtonLogout.onclick = () => {
             this._innerControler.onPressSignOut();
         };
+        this._sideBarCategoriesSearch.oninput = () => {
+            this.searchCategories();
+        };
     }
 
     transformPublications(publications){
@@ -125,22 +135,45 @@ class PublicationView extends HTMLElement {
 
     async getCategories() {
         const categories = await this._innerControler.getCategories();
+        this.categories = categories;
         if (categories && categories.length > 0) {
             this.createCategoriesButtons(categories);
         }
         console.log("categories", categories);
     }
 
+    searchCategories() {
+        const search = this._sideBarCategoriesSearch.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ /g, "");
+        const filteredCategories = this.categories.filter((categorie) =>
+            categorie.tagName
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/ /g, "")
+                .includes(search)
+        );
+        console.log("filteredCategories", filteredCategories);
+        this.createCategoriesButtons(filteredCategories);
+    }
+
     createCategoriesButtons(categories) {
+        while (this._sideBarCategoriesContainer.childElementCount > 2) {
+            this._sideBarCategoriesContainer.removeChild(this._sideBarCategoriesContainer.lastChild);
+        }
+        if (categories.length > 50) categories = categories.sort(() => Math.random() - 0.5);
+        else categories = categories.sort((a, b) => a.tagName.localeCompare(b.tagName));
         categories.forEach((categorie) => {
-            const button = document.createElement("button");
-            button.className = "btn btn-outline-dark justify-content-start d-flex";
-            button.innerText = categorie.tagName;
-            button.id = categorie.id;
-            button.onclick = () => {
-                this._innerControler.onClickCategorie(new CustomEvent("categoriePress", { detail: categorie }));
-            };
-            this._sideBarCategoriesContainer.appendChild(button);
+            // el 2+4 es por el titulo y el input de buscar, 4 son los botones de categorias
+            if (this._sideBarCategoriesContainer.childElementCount < (2+4)) {
+                const button = document.createElement("button");
+                button.className = "btn btn-outline-dark justify-content-start d-flex";
+                button.innerText = categorie.tagName;
+                button.id = categorie.id;
+                button.onclick = () => {
+                    this._innerControler.onClickCategorie(new CustomEvent("categoriePress", { detail: categorie }));
+                };
+                this._sideBarCategoriesContainer.appendChild(button);
+            }
         });
     }
 
