@@ -1,0 +1,6 @@
+abm publicaciones -> ventana modal 
+carousel https://www.w3schools.com/howto/howto_js_slideshow.asp
+
+filtrado publicaciones
+empezar el trueque -> chat (sub aplicación, todas las publicaciones con la que está truequeando)
+perfil de usuario -> baja o modificación y cambio foto, ubicación, etc
