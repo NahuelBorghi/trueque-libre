@@ -81,6 +81,7 @@ class PublicationView extends HTMLElement {
         this._sideBarCategoriesTitle.innerText = "Categorías";
 
         this._sideBarCategoriesSearch = document.createElement("input");
+        this._sideBarCategoriesSearch.className = 'form-control me-2'
         this._sideBarCategoriesSearch.placeholder = "Buscar categoría";
 
         this._sideBarCategoriesContainer.appendChild(this._sideBarCategoriesTitle);
@@ -164,7 +165,7 @@ class PublicationView extends HTMLElement {
         else categories = categories.sort((a, b) => a.tagName.localeCompare(b.tagName));
         categories.forEach((categorie) => {
             // el 2+4 es por el titulo y el input de buscar, 4 son los botones de categorias
-            if (this._sideBarCategoriesContainer.childElementCount < (2+4)) {
+            if (this._sideBarCategoriesContainer.childElementCount < (2+7)) {
                 const button = document.createElement("button");
                 button.className = "btn btn-outline-dark justify-content-start d-flex";
                 button.innerText = categorie.tagName;
