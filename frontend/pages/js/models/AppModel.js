@@ -2,6 +2,7 @@ class AppModel extends EventTarget {
     constructor() {
         super()
         this._url = 'http://localhost:8080'
+        this._offsetPublications = 0
     }
 
     async register(user){
@@ -81,10 +82,11 @@ class AppModel extends EventTarget {
 
     async getPublications(){
         console.log('getPublications')
-        const response = await fetch(`${this._url}/publication?limit=6472&offset=0`, {
+        const response = await fetch(`${this._url}/publication?limit=10&offset=${this._offsetPublications}`, {
             credentials: 'include', // Permite el envio y recepción de cookies
         })
-        
+
+        this._offsetPublications += 1
         return await response.json()
     }
 }

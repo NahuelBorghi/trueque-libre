@@ -2,6 +2,7 @@ class PublicationController {
     constructor(viewComponent, modelComponent) {
         this._viewComponent = viewComponent;
         this._modelComponent = modelComponent;
+        this._isFetching = false
     }
 
     async onPressSignOut(){
@@ -22,12 +23,14 @@ class PublicationController {
     }
 
     async getPublications(){
+        this._isFetching = true
         console.log('getPublications')
-        const data = await this._modelComponent.getPublications()
+        const data = await this._modelComponent.getPublications().then()
         console.log('data', data)
         if(data.status === "error"){
             alert(data.message)
         }
+        this._isFetching = false
         return data
     }
 

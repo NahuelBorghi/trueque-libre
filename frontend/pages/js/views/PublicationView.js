@@ -95,7 +95,7 @@ class PublicationView extends HTMLElement {
         this._sideBarContainer.appendChild(this._sideBarCategoriesContainer);
 
         this._publicationsContainer = document.createElement("div");
-        this._publicationsContainer.className = 'bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3'
+this._publicationsContainer.className = 'bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3'
         this._publicationsContainer.style = 'width: 80%; overflow: auto; height: 100%'
 
         this._container.appendChild(this._sideBarContainer);
@@ -114,9 +114,25 @@ class PublicationView extends HTMLElement {
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();
         };
+        this._publicationsContainer.onscroll = async (event) => {
+            this.handleOnScroll(event)
+        };
     }
 
-    transformPublications(publications){
+    async handleOnScroll(event) {
+        const scrollTop = event.target.scrollTop;
+        const scrollHeight = event.target.scrollHeight;
+        const clientHeight = event.target.clientHeight;
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
+            if (!this._innerControler._isFetching) {
+                const { data: newPublications, total } = await this._innerControler.getPublications();
+                const transformedData = this.transformPublications(newPublications);
+                this.createPublicationsCard(transformedData, Math.round(total[0].total / 5));
+            }
+        }
+    }
+
+    transformPublications(publications) {
         const newArray = []
         const grupos = 5
         for (let i = 0; i < publications.length; i += grupos) {
@@ -178,7 +194,7 @@ class PublicationView extends HTMLElement {
         });
     }
 
-    createPublicationsCard(publications, amountRows) {
+    createPublicationsCard(publications) {
         publications.forEach((publicationRow) => {
             const rowContainer = document.createElement('div')
             rowContainer.className = 'row justify-content-between column-gap-3'
