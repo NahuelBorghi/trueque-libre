@@ -43,7 +43,7 @@ class PublicationController {
         const label = `-------------------- Publication get - ${Date.now()}`;
         console.time(label);
         try {
-            const { limit, offset } = req.query;
+            let { limit, offset } = req.query;
             limit = limit ? parseInt(limit) : 10;
             offset = offset ? parseInt(offset)*limit : 0;
             const publications = await this.publicationService.getPublications(limit, offset);

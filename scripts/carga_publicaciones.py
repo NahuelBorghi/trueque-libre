@@ -32,7 +32,7 @@ with open(input_json_path, 'r', encoding="utf-8") as file:
     publications = json.load(file)
 
 
-def insertar_publication(publication):
+def insertar_publication(publication, index):
     try:
         id = str(uuid.uuid4())  # Genera un UUID v4
 
@@ -43,7 +43,7 @@ def insertar_publication(publication):
         
         valores = (
             id,
-            publication["title"],
+            publication["title"] + f"{index}",
             publication["description"],
             publication["state"],
             publication["status"],
@@ -62,8 +62,10 @@ def insertar_publication(publication):
 
 # Ejemplo de uso
 try:
+    i = 0
     for publication in publications:
-        insertar_publication(publication)
+        insertar_publication(publication, i)
+        i += 1
 finally:
     cursor.close()
     conexion.close()
