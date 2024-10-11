@@ -43,10 +43,11 @@ class PublicationController {
         const label = `-------------------- Publication get - ${Date.now()}`;
         console.time(label);
         try {
-            let { limit, offset } = req.query;
+            let { limit, offset, tagsFilter } = req.query;
+            if (tagsFilter) tagsFilter = tagsFilter.split(",")
             limit = limit ? parseInt(limit) : 10;
             offset = offset ? parseInt(offset)*limit : 0;
-            const publications = await this.publicationService.getPublications(limit, offset);
+            const publications = await this.publicationService.getPublications(limit, offset, tagsFilter);
             console.timeLog(label, "publications retrieved successfully");
             console.timeEnd(label);
             return res.status(200).send(publications);

@@ -27,9 +27,9 @@ class PublicationService {
         }
     }
 
-    async getPublications(limit, offset) {
+    async getPublications(limit, offset, tagsFilter) {
         try {
-            return await this.mysqlRepository.getPublications(limit, offset);
+            return await this.mysqlRepository.getPublications(limit, offset, tagsFilter);
         } catch (error) {
             throw new BaseException(`getPublicationsService: ${error.message}`, 400, "Bad Request", "GetPublicationsError");
         }

@@ -118,23 +118,45 @@ class MySqlRepository {
         }
     }
 
-    async getPublications(limit, offset) {
-        const queryData = `SELECT * FROM Publications LIMIT ? OFFSET ?`;
-        const queryTotal = `SELECT COUNT(*) as total FROM Publications`;
-        // console.log(await this.connection.execute("SELECT VERSION()"));
+    async getPublications(limit, offset, tagsFilter) {
+        const queryData = `
+            SELECT Publications.*, 
+                JSON_ARRAYAGG( JSON_OBJECT( 'id', Tags.id,  'tagName', Tags.tagName ) ) AS publicationTags
+            FROM Publications
+            INNER JOIN TagPublication ON Publications.id = TagPublication.Publications_id
+            INNER JOIN Tags ON TagPublication.idTags = Tags.id
+            ${tagsFilter !== undefined ? `WHERE Tags.tagName IN (${tagsFilter.map(() => "?").join(",")})` : ""}
+            GROUP BY Publications.id
+            LIMIT ? OFFSET ?`;
+
+        const queryTotal = `
+            SELECT COUNT(DISTINCT Publications.id) as total 
+            FROM Publications
+            INNER JOIN TagPublication ON Publications.id = TagPublication.Publications_id
+            INNER JOIN Tags ON TagPublication.idTags = Tags.id
+            ${tagsFilter !== undefined ? `WHERE Tags.tagName IN (${tagsFilter.map(() => "?").join(",")})` : ""}`;
+
         try {
-            // promise.all para ejecutar las dos consultas en paralelo ;)
+            // promise.all para ejecutar las dos consultas en paralelo
             const res = Promise.all([
-                this.connection.execute(queryData, [limit, offset]),
-                this.connection.execute(queryTotal),
+                this.connection.execute(queryData, [...tagsFilter, limit, offset]),
+                this.connection.execute(queryTotal, [...tagsFilter]),
             ]);
+
             const [data, total] = await res;
-            return { data: data[0], total: total[0] };
+
+            return { data: data[0], total: total[0][0]["total"] };
         } catch (error) {
             console.error(error);
-            throw new BaseException(`mysqlRepository.getPublications: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetPublicationsError");
+            throw new BaseException(
+                `mysqlRepository.getPublications: ${error.message}`,
+                error.statusCode ?? 400,
+                "Bad Request",
+                "GetPublicationsError"
+            );
         }
     }
+
 
     async getPublicationById(id) {
         const query = `SELECT * FROM Publication WHERE id = ?`;
