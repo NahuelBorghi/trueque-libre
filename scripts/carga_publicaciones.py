@@ -55,7 +55,7 @@ def insertar_publication(publication, index):
 
         cursor.execute(query, valores)
         conexion.commit()
-        print(f"Tag '{publication["title"]}' insertado con id {id}")
+        print(f"Tag '{publication.get('title', None)}' insertado con id {id}")
     except mysql.connector.Error as error:
         print(f"Error al insertar la publicación '{id}': {error}")
         conexion.rollback()
