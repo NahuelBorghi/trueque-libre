@@ -1,4 +1,5 @@
 import { PublicationController } from "../controllers/PublicationController.js";
+import { ModalView } from './ModalView.js'
 
 class PublicationView extends HTMLElement {
     constructor(modelComponent) {
@@ -7,6 +8,7 @@ class PublicationView extends HTMLElement {
         this.categories = [];
 
         this._innerControler = new PublicationController(this, modelComponent);
+        this._modalView = new ModalView(modelComponent)
 
         this._navContainer = document.createElement("nav");
         this._navContainer.className = "navbar bg-body-tertiary border-1 border-bottom";
@@ -95,7 +97,7 @@ class PublicationView extends HTMLElement {
         this._sideBarContainer.appendChild(this._sideBarCategoriesContainer);
 
         this._publicationsContainer = document.createElement("div");
-this._publicationsContainer.className = 'bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3'
+        this._publicationsContainer.className = 'bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3'
         this._publicationsContainer.style = 'width: 80%; overflow: auto; height: 100%'
 
         this._container.appendChild(this._sideBarContainer);
@@ -110,6 +112,12 @@ this._publicationsContainer.className = 'bg-body-secondary d-flex flex-row flex-
         this.getPublications();
         this._navButtonLogout.onclick = () => {
             this._innerControler.onPressSignOut();
+        };
+        this._sideBarButtonCrearTrueques.onclick = () => {
+            this.appendChild(this._modalView)
+        };
+        this._modalView._modalHeaderClose.onclick = () => {
+            this.removeChild(this._modalView)
         };
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();

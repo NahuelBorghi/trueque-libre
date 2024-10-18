@@ -4,3 +4,9 @@ carousel https://www.w3schools.com/howto/howto_js_slideshow.asp
 filtrado publicaciones
 empezar el trueque -> chat (sub aplicación, todas las publicaciones con la que está truequeando)
 perfil de usuario -> baja o modificación y cambio foto, ubicación, etc
+
+listado card las categorías de que se quiere truequear
+
+carga de publicación que tenga tags de categrías para que treuque
+
+boton visualizar no -> click el card
