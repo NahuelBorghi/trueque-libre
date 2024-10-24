@@ -114,6 +114,14 @@ class PublicationView extends HTMLElement {
             this._innerControler.onPressSignOut();
         };
         this._sideBarButtonCrearTrueques.onclick = () => {
+            if(this.categories.length > 0){
+                this.categories.forEach((item) => {
+                    const option = document.createElement('option')
+                    option.innerText = item.tagName
+                    option.value = JSON.stringify(item)
+                    this._modalView._selectCategoria.appendChild(option)
+                })
+            }
             this.appendChild(this._modalView)
         };
         this._modalView._modalHeaderClose.onclick = () => {
