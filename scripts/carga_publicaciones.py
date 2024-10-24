@@ -55,16 +55,40 @@ def insertar_publication(publication, index):
 
         cursor.execute(query, valores)
         conexion.commit()
-        print(f"Tag '{publication.get('title', None)}' insertado con id {id}")
+        return id
     except mysql.connector.Error as error:
         print(f"Error al insertar la publicación '{id}': {error}")
         conexion.rollback()
+        
+def insertar_tag_en_publication(publication_id, tag_id):
+    try:
+        query = """
+            INSERT INTO TagPublication (idTags, Publications_id)
+            VALUES (%s, %s)
+        """
+        
+        valores = (tag_id, publication_id)
+
+        cursor.execute(query, valores)
+        conexion.commit()
+        print(f"Tag '{tag_id}' insertado en la publicación '{publication_id}'")
+    except mysql.connector.Error as error:
+        print(f"Error al insertar el tag '{tag_id}' en la publicación '{publication_id}': {error}")
+        conexion.rollback()
+        
+def get_all_categories():
+    query = "SELECT * FROM Tags"
+    cursor.execute(query)
+    return cursor.fetchall()
 
 # Ejemplo de uso
 try:
     i = 0
+    categories = get_all_categories()
     for publication in publications:
-        insertar_publication(publication, i)
+        random_category = categories[i % len(categories)]
+        id = insertar_publication(publication, i)
+        insertar_tag_en_publication(id, random_category[0])
         i += 1
 finally:
     cursor.close()
