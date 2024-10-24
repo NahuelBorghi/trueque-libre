@@ -3,6 +3,7 @@ class AppModel extends EventTarget {
         super()
         this._url = 'http://localhost:8080'
         this._offsetPublications = 0
+        this._totalPublications = 0
     }
 
     async register(user){
@@ -82,12 +83,19 @@ class AppModel extends EventTarget {
 
     async getPublications(){
         console.log('getPublications')
-        const response = await fetch(`${this._url}/publication?limit=10&offset=${this._offsetPublications}`, {
-            credentials: 'include', // Permite el envio y recepción de cookies
-        })
-
-        this._offsetPublications += 1
-        return await response.json()
+        console.log('offset * 10', this._offsetPublications * 10)
+        if ((this._offsetPublications * 10) <= this._totalPublications) {
+            const response = await fetch(`${this._url}/publication?limit=10&offset=${this._offsetPublications}`, {
+                credentials: 'include', // Permite el envio y recepción de cookies
+            })
+            const json = await response.json()
+            console.log('json', json)
+            console.log('total', json.total)
+            this._totalPublications = json.total
+            this._offsetPublications += 1
+            return json
+        }
+        return { status: 'ok', data: [] }
     }
 }
 

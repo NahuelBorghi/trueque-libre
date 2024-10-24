@@ -135,7 +135,7 @@ class PublicationView extends HTMLElement {
             if (!this._innerControler._isFetching) {
                 const { data: newPublications, total } = await this._innerControler.getPublications();
                 const transformedData = this.transformPublications(newPublications);
-                this.createPublicationsCard(transformedData, Math.round(total[0].total / 5));
+                this.createPublicationsCard(transformedData, Math.round(total / 5));
             }
         }
     }
