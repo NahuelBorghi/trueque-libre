@@ -22,16 +22,22 @@ class PublicationController {
         return data
     }
 
-    async getPublications(){
+    async getPublications(tag) {
+        if (tag) this._tag = tag
+        else this._tag = null
         this._isFetching = true
         console.log('getPublications')
-        const data = await this._modelComponent.getPublications().then()
+        const data = await this._modelComponent.getPublications(tag).then()
         console.log('data', data)
         if(data.status === "error"){
             alert(data.message)
         }
         this._isFetching = false
         return data
+    }
+
+    resetValues(){
+        this._modelComponent.resetValues();
     }
 
     onClickCategorie({detail}) {

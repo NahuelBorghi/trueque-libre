@@ -6,6 +6,7 @@ class PublicationView extends HTMLElement {
         super();
 
         this.categories = [];
+        this._selectedTag = null;
 
         this._innerControler = new PublicationController(this, modelComponent);
         this._modalView = new ModalView(modelComponent)
@@ -133,10 +134,25 @@ class PublicationView extends HTMLElement {
         const clientHeight = event.target.clientHeight;
         if (scrollTop + clientHeight >= scrollHeight - 100) {
             if (!this._innerControler._isFetching) {
-                const { data: newPublications, total } = await this._innerControler.getPublications();
+                const { data: newPublications} = await this._innerControler.getPublications(this._selectedTag);
                 const transformedData = this.transformPublications(newPublications);
-                this.createPublicationsCard(transformedData, Math.round(total / 5));
+                this.createPublicationsCard(transformedData);
             }
+        }
+    }
+
+    async handleOnClickTag(event) {
+        const tag = event.target.innerText;
+        this._innerControler.resetValues();
+        if (this._selectedTag === tag) this._selectedTag = null;
+        else this._selectedTag = tag;
+        const { data: publications} = await this._innerControler.getPublications(this._selectedTag);
+        while (this._publicationsContainer.childElementCount > 0) {
+            this._publicationsContainer.removeChild( this._publicationsContainer.lastChild );
+        }
+        if (publications && publications.length > 0) {
+            const transformedData = this.transformPublications(publications)
+            this.createPublicationsCard(transformedData);
         }
     }
 
@@ -151,10 +167,10 @@ class PublicationView extends HTMLElement {
     }
 
     async getPublications() {
-        const { data: publications, total} = await this._innerControler.getPublications();
+        const { data: publications} = await this._innerControler.getPublications();
         if (publications && publications.length > 0) {
             const transformedData = this.transformPublications(publications)
-            this.createPublicationsCard(transformedData, Math.round(total / 5));
+            this.createPublicationsCard(transformedData);
         }
     }
 
@@ -196,6 +212,7 @@ class PublicationView extends HTMLElement {
                 button.id = categorie.id;
                 button.onclick = () => {
                     this._innerControler.onClickCategorie(new CustomEvent("categoriePress", { detail: categorie }));
+                    this.handleOnClickTag({ target: { innerText: categorie.tagName } });
                 };
                 this._sideBarCategoriesContainer.appendChild(button);
             }
