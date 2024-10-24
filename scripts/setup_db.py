@@ -38,4 +38,37 @@ except mysql.connector.Error as error:
     print(f"Error al insertar la publicación '{id}': {error}")
     conexion.rollback()
 
+
+## Insertar usuario administrador
+with open('admin_user.json', 'r', encoding="utf-8") as file:
+    admin_data = json.load(file)
+
+conexion.close()
+
+conexion = mysql.connector.connect(
+    host="localhost",
+    user=user,
+    password=password,
+    database=os.getenv('MYSQL_DATABASE')
+)
+cursor = conexion.cursor()
+query = """
+    INSERT INTO Users (id, userName, password, email, state)
+    VALUES (%s, %s, %s, %s, %s)
+"""
+values = (
+    admin_data['id'],
+    admin_data['userName'],
+    admin_data['password'],
+    admin_data['email'],
+    admin_data['state']
+)
+try:
+    cursor.execute(query, values)
+    conexion.commit()
+except mysql.connector.Error as error:
+    print(f"Error al insertar el usuario administrador: {error}")
+    conexion.rollback()
+
+cursor.close()
 conexion.close()

@@ -45,6 +45,7 @@ class PublicationController {
         try {
             let { limit, offset, tagsFilter } = req.query;
             if (tagsFilter) tagsFilter = tagsFilter.split(",")
+            else tagsFilter = [];
             limit = limit ? parseInt(limit) : 10;
             offset = offset ? parseInt(offset)*limit : 0;
             const publications = await this.publicationService.getPublications(limit, offset, tagsFilter);

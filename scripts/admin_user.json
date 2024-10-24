@@ -1,0 +1,7 @@
+{
+    "id":"admin-uuid",
+    "userName":"Admin1",
+    "password":"Admin1",
+    "email":"admin@admin.com",
+    "state":1
+}
