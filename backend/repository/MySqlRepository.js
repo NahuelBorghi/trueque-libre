@@ -125,7 +125,7 @@ class MySqlRepository {
             FROM Publications
             INNER JOIN TagPublication ON Publications.id = TagPublication.Publications_id
             INNER JOIN Tags ON TagPublication.idTags = Tags.id
-            ${tagsFilter !== undefined ? `WHERE Tags.tagName IN (${tagsFilter.map(() => "?").join(",")})` : ""}
+            ${tagsFilter.length !== 0 ? `WHERE Tags.tagName IN (${tagsFilter.map(() => "?").join(",")})` : ""}
             GROUP BY Publications.id
             LIMIT ? OFFSET ?`;
 
@@ -134,7 +134,7 @@ class MySqlRepository {
             FROM Publications
             INNER JOIN TagPublication ON Publications.id = TagPublication.Publications_id
             INNER JOIN Tags ON TagPublication.idTags = Tags.id
-            ${tagsFilter !== undefined ? `WHERE Tags.tagName IN (${tagsFilter.map(() => "?").join(",")})` : ""}`;
+            ${tagsFilter.length !== 0 ? `WHERE Tags.tagName IN (${tagsFilter.map(() => "?").join(",")})` : ""}`;
 
         try {
             // promise.all para ejecutar las dos consultas en paralelo
