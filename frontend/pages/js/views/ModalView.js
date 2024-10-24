@@ -37,6 +37,7 @@ class ModalView extends HTMLElement {
 
         this._modalBody = document.createElement('div')
         this._modalBody.className = 'modal-body'
+        this._modalBody.style.overflow = 'auto'
 
         this._form = document.createElement('form')
         this._form.className = 'd-flex flex-column gap-3 py-5'
