@@ -97,22 +97,24 @@ class MySqlRepository {
 
     // Publication methods
     async createPublication(publication) {
-        const query = `INSERT INTO Publication (id, idUser, title, description, state, status, creationDate, creationUser, modificationDate, modificationUser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const query = `INSERT INTO Publications (id, title, description, state, status, ubication, exchange, creationDate, creationUser, modificationDate, modificationUser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         try {
-            const [result] = await this.connection.execute(query,
+            await this.connection.execute(query,
                 [
                     publication.id,
                     publication.title,
                     publication.description,
                     publication.state,
                     publication.status,
+                    publication.ubication,
+                    publication.exchange,
                     publication.creationDate,
                     publication.creationUser,
                     publication.modificationDate,
-                    publication.modificationUser
+                    publication.modificationUser,
                 ]
             );
-            return result.insertId;
+            return publication.id;
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.createPublication: ${error.message}`, error.statusCode ?? 400, "Bad Request", "PublicationCreationError");

@@ -4,8 +4,8 @@ class ModalController {
         this._modelComponent = modelComponent;
     }
 
-    onSubmit({ title, description, exchange, state, status, ubication, tags, images }) {
-        const { idPublication } = this._modelComponent.submitPublication({
+    async onSubmit({ title, description, exchange, state, status, ubication, tags, images }) {
+        const { id: idPublication } = await this._modelComponent.submitPublication({
             title,
             description,
             state,
@@ -13,7 +13,7 @@ class ModalController {
             exchange,
             ubication,
             tags
-        });
+        }).then();
         this._modelComponent.submitImage({ idPublication, images });
         console.log('idPublication', idPublication)
         // this._viewComponent.closeModal();

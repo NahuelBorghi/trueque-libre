@@ -206,14 +206,14 @@ class ModalView extends HTMLElement {
         
         this._form.onsubmit = (event) => {
             event.preventDefault()
-            const title = this._inputTitle
-            const description = this._inputDescription
-            const exchange = this._inputTrueque
+            const title = this._inputTitle.value
+            const description = this._inputDescription.value
+            const exchange = this._inputTrueque.value
             const state = this._selectEstado.value
             const status = 'En Trueque'
             const ubication = 'Mar del plata'
             const tags = this.formatTags()
-            const images = this._formatImages()
+            const images = this.formatImages()
 
             this._innerControler.onSubmit({
                 title,

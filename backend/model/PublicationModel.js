@@ -6,12 +6,13 @@ class Publication {
         description,
         ubication,
         creationUser,
+        state = "created", // created, published, closed
+        status = "active", // active, inactive
+        exchange,
+        id = generateId(),
         modificationUser = null,
         modificationDate = null,
         creationDate = new Date(),
-        state = "created", // created, published, closed
-        status = "active", // active, inactive
-        id = generateId()
     ) {
         this.id = id;
         this.title = title;

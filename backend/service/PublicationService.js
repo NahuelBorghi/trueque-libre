@@ -10,9 +10,9 @@ class PublicationService {
         console.timeEnd('PublicationService setup');
     }
 
-    async createPublication( title, description, ubication, creationUser ) {
+    async createPublication( title, description, state, status, exchange, ubication, creationUser) {
         try {
-            const publication = new Publication( title, description, ubication, creationUser );
+            const publication = new Publication( title, description, ubication, creationUser, state, status, exchange  );
             return await this.mysqlRepository.createPublication(publication);
         } catch (error) {
             throw new BaseException(`createPublicationService: ${error.message}`, 400, "Bad Request", "PublicationCreationError");

@@ -14,7 +14,7 @@ class PublicationController {
         console.time(label);
         try {
             const creationUser = req.user.id;
-            const { title, description, ubication} = req.body;
+            const { title, description, state, status, exchange, ubication, tags } = req.body;
             if (!title || !description || !ubication || !creationUser) {
                 console.timeEnd(label);
                 throw new BaseException(
@@ -24,7 +24,7 @@ class PublicationController {
                     "MissingFields"
                 );
             }
-            const id = await this.publicationService.createPublication( title, description, ubication, creationUser );
+            const id = await this.publicationService.createPublication( title, description, state, status, exchange, ubication, creationUser);
             console.timeLog(label, "publication created successfully");
             console.timeEnd(label);
             return res .status(201) .send({ message: "Publication created successfully", id: id });

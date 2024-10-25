@@ -106,9 +106,7 @@ class AppModel extends EventTarget {
             body: JSON.stringify({ title, description, state, status, exchange, ubication, tags }),
             credentials: 'include', // Permite el envio y recepción de cookies
         })
-        const { data } = await response.json()
-        
-        return data
+        return await response.json()
     }
     async submitImage({ idPublication, images }){
         console.log('submitImage')
