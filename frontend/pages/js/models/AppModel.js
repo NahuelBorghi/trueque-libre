@@ -97,6 +97,33 @@ class AppModel extends EventTarget {
         }
         return { status: 'ok', data: [] }
     }
+
+    async submitPublication({ title, description, state, status, exchange, ubication, tags }){
+        console.log('submitPublication')
+        const response = await fetch(`${this._url}/publication`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, description, state, status, exchange, ubication, tags }),
+            credentials: 'include', // Permite el envio y recepción de cookies
+        })
+        const { data } = await response.json()
+        
+        return data
+    }
+    async submitImage({ idPublication, images }){
+        console.log('submitImage')
+        const promises = []
+        images.forEach((image) => {
+            promises.push(fetch(`${this._url}/upload?publicationId=${idPublication}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: image,
+                credentials: 'include', // Permite el envio y recepción de cookies
+            }))
+        });
+        
+        return await Promise.all(promises)
+    }
 }
 
 export { AppModel }

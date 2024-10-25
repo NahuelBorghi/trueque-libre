@@ -3,6 +3,8 @@ import { ModalController } from "../controllers/ModalController.js";
 class ModalView extends HTMLElement {
     constructor(modelComponent) {
         super();
+        this.tagSelected = []
+        this.images = []
         // Adjuntamos el shadow DOM
         this.attachShadow({ mode: 'open' });
 
@@ -73,6 +75,7 @@ class ModalView extends HTMLElement {
         this._inputTitle.className = 'form-control me-2'
         this._inputTitle.placeholder = 'Título'
         this._inputTitle.id = 'floatingInputTitle'
+        this._inputTitle.setAttribute("required", true)
         
         this._containerTitle.appendChild(this._inputTitle)
         this._containerTitle.appendChild(this._inputTitleLabel)
@@ -89,9 +92,26 @@ class ModalView extends HTMLElement {
         this._inputDescription.placeholder = 'Descripción'
         this._inputDescription.style.height = '150px'
         this._inputDescription.id = 'floatingInputDescription'
+        this._inputDescription.setAttribute("required", true)
 
         this._containerDescription.appendChild(this._inputDescription)
         this._containerDescription.appendChild(this._inputDescriptionLabel)
+
+        this._containerTrueque = document.createElement('div')
+        this._containerTrueque.className = 'form-floating'
+        
+        this._inputTruequeLabel = document.createElement('label')
+        this._inputTruequeLabel.innerText = 'Trueque'
+        this._inputTruequeLabel.for = 'floatingInputTrueque'
+        
+        this._inputTrueque = document.createElement('input')
+        this._inputTrueque.className = 'form-control me-2'
+        this._inputTrueque.placeholder = 'Trueque'
+        this._inputTrueque.id = 'floatingInputTrueque'
+        this._inputTrueque.setAttribute("required", true)
+        
+        this._containerTrueque.appendChild(this._inputTrueque)
+        this._containerTrueque.appendChild(this._inputTruequeLabel)
 
         this._selectEstado = document.createElement('select')
         this._selectEstado.className = 'form-select'
@@ -113,23 +133,28 @@ class ModalView extends HTMLElement {
         
         this.createProductStatusOption()
 
+        this._buttonSubmit = document.createElement('input')
+        this._buttonSubmit.type = 'submit'
+        this._buttonSubmit.className = 'btn btn-secondary'
+        this._buttonSubmit.value = 'Crear trueque'
+
         this._form.appendChild(this._containerImage)
         this._form.appendChild(this._containerTitle)
         this._form.appendChild(this._containerDescription)
+        this._form.appendChild(this._containerTrueque)
         this._form.appendChild(this._selectEstado)
         this._form.appendChild(this._categoriaContainer)
+        this._form.appendChild(this._buttonSubmit)
 
         this._modalFooter = document.createElement('div')
         this._modalFooter.className = 'modal-footer bg-body-tertiary'
-        this._modalFooterSubmit = document.createElement('input')
-        this._modalFooterSubmit.type = 'submit'
-        this._modalFooterSubmit.className = 'btn btn-secondary'
-        this._modalFooterSubmit.value = 'Crear trueque'
+        this._modalFooterText = document.createElement('h5')
+        this._modalFooterText.innerText = 'Trueque libre'
 
         this._modalHeader.appendChild(this._modalHeaderTitle)
         this._modalHeader.appendChild(this._modalHeaderClose)
         this._modalBody.appendChild(this._form)
-        this._modalFooter.appendChild(this._modalFooterSubmit)
+        this._modalFooter.appendChild(this._modalFooterText)
 
         this._modalContent.appendChild(this._modalHeader)
         this._modalContent.appendChild(this._modalBody)
@@ -142,20 +167,69 @@ class ModalView extends HTMLElement {
 
     deleteImage(target){
         this._containerImages.removeChild(target)
+        const imagesFiltered = this.images.filter((image) => {
+            return image.id !== target.id
+        })
+        this.images = imagesFiltered
     }
 
     deleteCategorie(target){
         this._categoriesTagContainer.removeChild(target)
+        const tagFiltered = this.tagSelected.filter((tag) => {
+            return tag.id !== target.id
+        })
+        this.tagSelected = tagFiltered
+    }
+
+    closeModal(){
+        this._modalContainer.style.display = 'none'
+    }
+
+    formatTags(){
+        return this.tagSelected.map((tag)=> {
+            return tag.id
+        }).join(',')
+    }
+    
+    formatImages(){
+        return this.images.map((image)=> {
+            const formData = new FormData();
+            formData.append('fileData', image.file);
+            return formData
+        })
     }
 
     connectedCallback() {
         this._inputImageLabel.onclick = () => {
             this._inputImage.click()
         }
+        
+        this._form.onsubmit = (event) => {
+            event.preventDefault()
+            const title = this._inputTitle
+            const description = this._inputDescription
+            const exchange = this._inputTrueque
+            const state = this._selectEstado.value
+            const status = 'En Trueque'
+            const ubication = 'Mar del plata'
+            const tags = this.formatTags()
+            const images = this._formatImages()
+
+            this._innerControler.onSubmit({
+                title,
+                description,
+                exchange,
+                state,
+                status,
+                ubication,
+                tags,
+                images,
+            })
+        }
 
         this._selectCategoria.onchange = () => {
             const value = JSON.parse(this._selectCategoria.value)
-
+            this.tagSelected.push(value)
             if(typeof value !== 'object'){
                 return
             }
@@ -166,13 +240,13 @@ class ModalView extends HTMLElement {
             const button = document.createElement('button')
 
             tag.className = 'border border-secondary rounded p-1 d-flex flex-row gap-1'
+            tag.id = id
             tagText.innerText = tagName
             button.type = 'button'
             button.className = 'btn-close'
             button.onclick = () => {
                 this.deleteCategorie(tag)
             }
-
 
             tag.appendChild(tagText)
             tag.appendChild(button)
@@ -185,25 +259,28 @@ class ModalView extends HTMLElement {
                 return
             }
             const file = event.target.files[0]
+            this.images.push({ file, id: `${file.name}-${this._containerImages.childNodes.length}` })
             const reader = new FileReader();
 
             reader.onload = (event) => {
                 const source = event.target.result;
-                const button = document.createElement('div')
-                button.innerText = 'Borrar'
-                button.className = 'btn btn-danger w-100'
-
-                const body = document.createElement('div')
-                body.className = 'card-body bg-body-secondary'
 
                 const container = document.createElement('div')
                 container.className = 'card'
                 container.style.width = '200px'
+                container.id = `${file.name}-${this._containerImages.childNodes.length}`
 
                 const img = document.createElement('img')
                 img.className = 'card-img'
                 img.style.height = '150px'
                 img.src = source
+
+                const body = document.createElement('div')
+                body.className = 'card-body bg-body-secondary'
+
+                const button = document.createElement('div')
+                button.innerText = 'Borrar'
+                button.className = 'btn btn-danger w-100'
 
                 button.onclick = () => {
                     this.deleteImage(container)

@@ -105,6 +105,7 @@ class PublicationView extends HTMLElement {
 
         this.appendChild(this._navContainer);
         this.appendChild(this._container);
+        this.appendChild(this._modalView);
     }
 
     connectedCallback() {
@@ -122,10 +123,10 @@ class PublicationView extends HTMLElement {
                     this._modalView._selectCategoria.appendChild(option)
                 })
             }
-            this.appendChild(this._modalView)
+            this._modalView._modalContainer.style.display = 'block'
         };
         this._modalView._modalHeaderClose.onclick = () => {
-            this.removeChild(this._modalView)
+            this._modalView._modalContainer.style.display = 'none'
         };
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();
