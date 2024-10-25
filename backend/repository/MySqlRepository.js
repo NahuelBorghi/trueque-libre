@@ -2,6 +2,7 @@ const BaseException = require('../exceptions/BaseException');
 const User = require('../model/UserModel');
 const { createConnection } = require("mysql2/promise");
 const { hashFunciton } = require('../utils/hash');
+const generateUUID = require('../utils/UUID');
 
 
 class MySqlRepository {
@@ -246,6 +247,19 @@ class MySqlRepository {
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getImageById: ${error.message}`, error.statusCode ?? 400, "Bad Request", "ImageRetrievalError");
+        }
+    }
+
+    async insertImagePublicationRelation(idPublication, idUser, idImage) {
+        const query = `INSERT INTO ImagePublication (id, idPublication, idUser, idImage) VALUES (?, ?, ?, ?)`;
+        const id = generateUUID();
+        values = [id, idPublication, idUser, idImage];
+        try {
+            await this.connection.execute(query, values);
+            return id;
+        } catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.insertImagePublicationRelation: ${error.message}`, error.statusCode ?? 400, "Bad Request", "ImagePublicationRelationError");
         }
     }
 

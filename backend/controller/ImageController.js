@@ -31,23 +31,26 @@ class ImageController {
                     throw new BaseException("File upload error", 400, "Bad Request", "FileUploadError");
                 }
                 
-                const creationUser = req.body.creationUser;
+                const idUser = req.user.id;
+                const { publicationId } = req.params;
                 const file = req.file;
                 
                 console.log('file', file)
 
-                if (!file || !creationUser) {
+                if (!file || !idUser) {
                     throw new BaseException("Missing required fields", 400, "Bad Request", "MissingRequiredFields");
                 }
 
                 const mimetype = file.mimetype;
 
                 // Guardar el archivo utilizando el servicio
-                const imageId = await this.imageService.saveImage(file.buffer, Date.now(), mimetype, creationUser);
-                console.log("Image ID:", imageId);
+                const idImage = await this.imageService.saveImage(file.buffer, Date.now(), mimetype, idUser);
+                await this.imageService.saveRelation(publicationId, idUser, idImage);
+                console.log("Image ID:", idImage);
 
-                res.status(201).json({ message: 'Imagen guardada exitosamente.', imageId });
+                res.status(201).json({ message: 'Imagen guardada exitosamente.', idImage });
             });
+
         } catch (error) {
             throw new BaseException(`ImageController.uploadImage: ${error.message}`, error.statusCode ?? 400, "Bad Request", "ImageUploadError");
         }

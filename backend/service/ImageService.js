@@ -99,6 +99,14 @@ class ImageService {
         }
     }
 
+    saveRelation(idPublication, idUser, idImage) {
+        try {
+            return this.mysqlRepository.insertImagePublicationRelation(idPublication, idUser, idImage);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     // async getImageById(imageId) {
     //     try {
     //         const result = await this.mysqlRepository.getImageById(imageId);

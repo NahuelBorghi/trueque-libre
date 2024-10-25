@@ -81,11 +81,10 @@ class AppModel extends EventTarget {
         return data.data
     }
 
-    async getPublications(){
+    async getPublications(tag){
         console.log('getPublications')
-        console.log('offset * 10', this._offsetPublications * 10)
         if ((this._offsetPublications * 10) <= this._totalPublications) {
-            const response = await fetch(`${this._url}/publication?limit=10&offset=${this._offsetPublications}`, {
+            const response = await fetch(`${this._url}/publication?limit=10&offset=${this._offsetPublications}${tag != null ? `&tagsFilter=${tag}`:""}`, {
                 credentials: 'include', // Permite el envio y recepción de cookies
             })
             const json = await response.json()
@@ -97,6 +96,7 @@ class AppModel extends EventTarget {
         }
         return { status: 'ok', data: [] }
     }
+
 
     async submitPublication({ title, description, state, status, exchange, ubication, tags }){
         console.log('submitPublication')
@@ -123,6 +123,12 @@ class AppModel extends EventTarget {
         });
         
         return await Promise.all(promises)
+    }
+    
+    resetValues(){
+        this._offsetPublications = 0
+        this._totalPublications = 0
+
     }
 }
 
