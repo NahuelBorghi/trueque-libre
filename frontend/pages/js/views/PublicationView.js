@@ -257,7 +257,7 @@ class PublicationView extends HTMLElement {
                 image.style.maxHeight = "200px";
                 image.src = "../../assets/image.png";
 
-                const data = await this._innerControler.getImage(publication.images[0]);
+                const data = await this._innerControler.getImage(publication.images?.[0]);
                 if (data) {
                     const imgUrl = URL.createObjectURL(data);
                     console.log('imgUrl', imgUrl)
