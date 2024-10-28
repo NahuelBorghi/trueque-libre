@@ -67,9 +67,7 @@ class AppModel extends EventTarget {
             credentials: "include", // Permite el envio y recepción de cookies
         });
         console.log("first");
-        this.dispatchEvent(
-            new CustomEvent("tokenVerify", { detail: response })
-        );
+        this.dispatchEvent(new CustomEvent("tokenVerify", { detail: response }));
     }
 
     async getCategories() {
@@ -87,9 +85,9 @@ class AppModel extends EventTarget {
         console.log("getPublications");
         if (this._offsetPublications * 10 <= this._totalPublications) {
             const response = await fetch(
-                `${this._url}/publication?limit=10&offset=${
-                    this._offsetPublications
-                }${tag != null ? `&tagsFilter=${tag}` : ""}`,
+                `${this._url}/publication?limit=10&offset=${this._offsetPublications}${
+                    tag != null ? `&tagsFilter=${tag}` : ""
+                }`,
                 {
                     credentials: "include", // Permite el envio y recepción de cookies
                 }
@@ -104,15 +102,7 @@ class AppModel extends EventTarget {
         return { status: "ok", data: [] };
     }
 
-    async submitPublication({
-        title,
-        description,
-        state,
-        status,
-        exchange,
-        ubication,
-        tags,
-    }) {
+    async submitPublication({ title, description, state, status, exchange, ubication, tags }) {
         console.log("submitPublication");
         const response = await fetch(`${this._url}/publication`, {
             method: "POST",
@@ -130,6 +120,7 @@ class AppModel extends EventTarget {
         });
         return await response.json();
     }
+
     async submitImage({ idPublication, images }) {
         console.log("submitImage");
 
@@ -144,10 +135,20 @@ class AppModel extends EventTarget {
         return await Promise.all(promises);
     }
 
+    async getImages(idImage) {
+        console.log("getImages");
+
+        const response = await fetch(`${this._url}/image/${idImage}`, {
+            credentials: "include", // Permite el envío y recepción de cookies
+        });
+
+        return response;
+    }
+
     resetValues() {
         this._offsetPublications = 0;
         this._totalPublications = 0;
     }
 }
 
-export { AppModel }
+export { AppModel };

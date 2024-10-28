@@ -243,7 +243,7 @@ class PublicationView extends HTMLElement {
         publications.forEach((publicationRow) => {
             const rowContainer = document.createElement("div");
             rowContainer.className = "row justify-content-between column-gap-3";
-            publicationRow.forEach((publication) => {
+            publicationRow.forEach(async (publication) => {
                 const containerColumn = document.createElement("div");
                 containerColumn.className = "col";
                 containerColumn.id = publication.id;
@@ -254,11 +254,18 @@ class PublicationView extends HTMLElement {
 
                 const image = document.createElement("img");
                 image.className = "card-img-top";
-                image.src =
-                    "https://media.istockphoto.com/id/1496378856/es/foto/mostrar-el-smartphone-durante-la-conferencia.jpg?s=2048x2048&w=is&k=20&c=SvMzrj9vTqIs__fauYNimKkawTdXCn9-NXCIBRyXDWk=";
+                image.style.maxHeight = "200px";
+                image.src = "../../assets/image.png";
+
+                const data = await this._innerControler.getImage(publication.images[0]);
+                if (data) {
+                    const imgUrl = URL.createObjectURL(data);
+                    console.log('imgUrl', imgUrl)
+                    image.src = imgUrl;
+                }
 
                 const content = document.createElement("div");
-                content.className = "card-body d-flex flex-column";
+                content.className = "card-body d-flex flex-column gap-2";
 
                 const title = document.createElement("h5");
                 title.className = "card-title";

@@ -39,6 +39,17 @@ class PublicationController {
         return data;
     }
 
+    async getImage(idImage) {
+        if(!idImage) return
+        const data = await this._modelComponent.getImages(idImage);
+
+        if (!data.ok) {
+            console.error("ERROR EN TRAER IMAGEN")
+            return
+        }
+        return await data.blob();
+    }
+
     resetValues() {
         this._modelComponent.resetValues();
     }

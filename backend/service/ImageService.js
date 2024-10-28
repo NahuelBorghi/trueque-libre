@@ -17,13 +17,13 @@ class ImageService {
             const imageDirectory = `${__dirname}/../images/${creationUser}`
             const image = new Image(name, mimetype, creationUser);
 
-            zlib.gzip(fileBuffer, (err, buffer) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    fileBuffer = buffer;
-                }
-            });
+            // zlib.gzip(fileBuffer, (err, buffer) => {
+            //     if (err) {
+            //         console.error(err);
+            //     } else {
+            //         fileBuffer = buffer;
+            //     }
+            // });
 
             await this.mysqlRepository.insertImage(image);
 
@@ -74,13 +74,13 @@ class ImageService {
                 throw new BaseException("Image doesn't exists", 400, "Probablly been deleted", "Image doesn't exist")
             }
             let imageCoppied = fs.readFileSync(imageRoute)
-            zlib.gzip(imageCoppied, (err, buffer) => {
-                if (err) {
-                    console.error(err);
-                } else {
-                    imageCoppied = buffer;
-                }
-            });
+            // zlib.gzip(imageCoppied, (err, buffer) => {
+            //     if (err) {
+            //         console.error(err);
+            //     } else {
+            //         imageCoppied = buffer;
+            //     }
+            // });
             return {...image, image: imageCoppied};
         } catch (error) {
             console.error(error);

@@ -1,6 +1,7 @@
 import subprocess
 
-scripts = ['setup_db.py', 'carga_publicaciones.py'] #, 'carga_tags_mysql.py']  
+# scripts = ['setup_db.py', 'carga_publicaciones.py'] 
+scripts = ['carga_tags_mysql.py']  
 
 for script in scripts:
     try:
