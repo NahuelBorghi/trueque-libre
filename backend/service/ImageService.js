@@ -73,7 +73,7 @@ class ImageService {
             if(!fs.existsSync(imageRoute)){
                 throw new BaseException("Image doesn't exists", 400, "Probablly been deleted", "Image doesn't exist")
             }
-            const imageCoppied = fs.readFileSync(imageRoute)
+            let imageCoppied = fs.readFileSync(imageRoute)
             zlib.gzip(imageCoppied, (err, buffer) => {
                 if (err) {
                     console.error(err);
