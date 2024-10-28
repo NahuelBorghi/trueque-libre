@@ -99,7 +99,7 @@ class PublicationView extends HTMLElement {
 
         this._publicationsContainer = document.createElement("div");
         this._publicationsContainer.className = "bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3";
-        this._publicationsContainer.style = "width: 80%; overflow: auto; height: 100%";
+        this._publicationsContainer.style = "width: 80%; overflow: scroll; height: 100%";
 
         this._container.appendChild(this._sideBarContainer);
         this._container.appendChild(this._publicationsContainer);
@@ -258,15 +258,35 @@ class PublicationView extends HTMLElement {
                     "https://media.istockphoto.com/id/1496378856/es/foto/mostrar-el-smartphone-durante-la-conferencia.jpg?s=2048x2048&w=is&k=20&c=SvMzrj9vTqIs__fauYNimKkawTdXCn9-NXCIBRyXDWk=";
 
                 const content = document.createElement("div");
-                content.className = "card-body";
+                content.className = "card-body d-flex flex-column";
 
                 const title = document.createElement("h5");
                 title.className = "card-title";
                 title.innerText = publication.title;
 
+                const tagsContainer = document.createElement("div");
+                tagsContainer.className = "d-flex gap-2 flex-wrap";
+
+                publication.publicationTags.forEach((publicationTag) => {
+                    if (publicationTag) {
+                        const tags = document.createElement("div");
+                        tags.className = "d-flex border border-secondary rounded-pill px-2";
+
+                        const tagName = document.createElement("p");
+                        tagName.className = "p-0 m-0 d-inline-block text-truncate";
+                        tagName.style.fontSize = "12px";
+                        tagName.style.maxWidth = "100px";
+                        tagName.style.textAlign = "center";
+                        tagName.innerText = publicationTag.tagName;
+
+                        tags.appendChild(tagName);
+                        tagsContainer.appendChild(tags);
+                    }
+                });
+
                 const description = document.createElement("p");
                 description.className = "card-text";
-                description.innerText = publication.description;
+                description.innerText = publication.description.slice(0, 100).concat("...");
 
                 const button = document.createElement("button");
 
@@ -277,6 +297,7 @@ class PublicationView extends HTMLElement {
                 // };
 
                 content.appendChild(title);
+                content.appendChild(tagsContainer);
                 content.appendChild(description);
                 content.appendChild(button);
                 containerCard.appendChild(image);

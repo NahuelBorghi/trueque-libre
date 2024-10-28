@@ -239,7 +239,7 @@ class ModalView extends HTMLElement {
             const tagText = document.createElement('div')
             const button = document.createElement('button')
 
-            tag.className = 'border border-secondary rounded p-1 d-flex flex-row gap-1'
+            tag.className = 'border border-secondary rounded-pill p-1 d-flex flex-row gap-1'
             tag.id = id
             tagText.innerText = tagName
             button.type = 'button'
