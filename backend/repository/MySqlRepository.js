@@ -190,16 +190,35 @@ class MySqlRepository {
         const queryData = `
         SELECT 
             Publications.*, 
-            JSON_ARRAYAGG(JSON_OBJECT('id', Tags.id, 'tagName', Tags.tagName)) AS publicationTags, 
-            GROUP_CONCAT(i.idImage) AS images
-        FROM 
-            Publications
-        LEFT JOIN 
-            ImagePublication i ON Publications.id = i.idPublication
-        INNER JOIN 
-            TagPublication ON Publications.id = TagPublication.Publications_id
-        INNER JOIN 
-            Tags ON TagPublication.idTags = Tags.id
+            (
+                SELECT JSON_ARRAYAGG(JSON_OBJECT('id', Tags.id, 'tagName', Tags.tagName))
+                FROM TagPublication
+                INNER JOIN Tags ON TagPublication.idTags = Tags.id
+                WHERE TagPublication.Publications_id = Publications.id
+            ) AS publicationTags,
+            (
+                SELECT JSON_ARRAYAGG(i.idImage)
+                FROM ImagePublication i
+                WHERE i.idPublication = Publications.id
+            ) AS images
+        FROM Publications
+        ${
+            tagsFilter.length !== 0
+                ? `
+            INNER JOIN TagPublication tp ON Publications.id = tp.Publications_id
+            INNER JOIN Tags t ON tp.idTags = t.id
+            WHERE t.tagName IN (${tagsFilter.map(() => "?").join(",")})
+        `
+                : ""
+        }
+        GROUP BY Publications.id
+        LIMIT ? OFFSET ?`;
+
+        const queryTotal = `
+        SELECT COUNT(DISTINCT Publications.id) as total 
+        FROM Publications
+        INNER JOIN TagPublication ON Publications.id = TagPublication.Publications_id
+        INNER JOIN Tags ON TagPublication.idTags = Tags.id
         ${
             tagsFilter.length !== 0
                 ? `WHERE Tags.tagName IN (${tagsFilter
@@ -207,26 +226,7 @@ class MySqlRepository {
                       .join(",")})`
                 : ""
         }
-        GROUP BY 
-            Publications.id
-        LIMIT ? OFFSET ?`;
-
-        const queryTotal = `
-        SELECT 
-            COUNT(DISTINCT Publications.id) as total 
-        FROM 
-            Publications
-        INNER JOIN 
-            TagPublication ON Publications.id = TagPublication.Publications_id
-        INNER JOIN 
-            Tags ON TagPublication.idTags = Tags.id
-        ${
-            tagsFilter.length !== 0
-                ? `WHERE Tags.tagName IN (${tagsFilter
-                      .map(() => "?")
-                      .join(",")})`
-                : ""
-        }`;
+    `;
 
         try {
             // Ejecuta ambas consultas en paralelo
@@ -239,12 +239,10 @@ class MySqlRepository {
                 this.connection.execute(queryTotal, [...tagsFilter]),
             ]);
 
-            const data = dataResult[0].map((row) => ({
-                ...row,
-                images: row.images ? row.images.split(",") : [],
-            }));
+            const data = dataResult[0];
+            const total = totalResult[0][0]["total"];
 
-            return { data, total: totalResult[0][0]["total"] };
+            return { data, total };
         } catch (error) {
             console.error(error);
             throw new BaseException(
