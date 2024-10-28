@@ -24,7 +24,8 @@ class PublicationController {
                     "MissingFields"
                 );
             }
-            const id = await this.publicationService.createPublication( title, description, state, status, exchange, ubication, creationUser);
+            const id = await this.publicationService.createPublication(title, description, state, status, exchange, ubication, creationUser);
+            if (tags) await this.publicationService.addTagsToPublication(id, tags);
             console.timeLog(label, "publication created successfully");
             console.timeEnd(label);
             return res .status(201) .send({ message: "Publication created successfully", id: id });

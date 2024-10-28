@@ -26,16 +26,15 @@ class ImageController {
                     }
                 }
             })
-            upload.single('fileData')(req, res, async (err) => {
+            upload.single('file')(req, res, async (err) => {
                 if (err) {
+                    console.error(err);
                     throw new BaseException("File upload error", 400, "Bad Request", "FileUploadError");
                 }
                 
                 const idUser = req.user.id;
-                const { publicationId } = req.params;
+                const { publicationId } = req.query;
                 const file = req.file;
-                
-                console.log('file', file)
 
                 if (!file || !idUser) {
                     throw new BaseException("Missing required fields", 400, "Bad Request", "MissingRequiredFields");
@@ -46,7 +45,6 @@ class ImageController {
                 // Guardar el archivo utilizando el servicio
                 const idImage = await this.imageService.saveImage(file.buffer, Date.now(), mimetype, idUser);
                 await this.imageService.saveRelation(publicationId, idUser, idImage);
-                console.log("Image ID:", idImage);
 
                 res.status(201).json({ message: 'Imagen guardada exitosamente.', idImage });
             });
@@ -63,12 +61,10 @@ class ImageController {
             if (!imageId) {
                 throw new BaseException("Image ID is required", 400, "Bad Request", "ImageIdRequired");
             }
-            console.log("Image ID:", imageId);
             const image = await this.imageService.getImageById(imageId);
             if (!image) {
                 throw new BaseException("Image not found", 404, "Not Found", "ImageNotFound");
             }
-            console.log("Image ID:", image.id);
             // Determinar el tipo de imagen basado en la extensión de archivo si es necesario
             res.setHeader('Content-Type', image.mimetype); // Cambiar según el tipo de imagen si es necesario
 

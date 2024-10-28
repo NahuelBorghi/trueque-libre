@@ -3,6 +3,7 @@ const ImageRoutes = require("express").Router();
 const ImageController = require("../controller/ImageController.js");
 const imageController = new ImageController();
 ImageRoutes.post("/upload", async (req, res, next) => {
+    console.log('cors y la concha de tu madre')
     try {
         await imageController.uploadImage(req, res);
     } catch (error) {

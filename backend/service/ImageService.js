@@ -17,15 +17,10 @@ class ImageService {
             const imageDirectory = `${__dirname}/../images/${creationUser}`
             const image = new Image(name, mimetype, creationUser);
 
-            console.log('image', image);
-
-            console.log('fs.existsSync(`${__dirname}/../images/${creationUser}`)', fs.existsSync(imageDirectory))
-
             zlib.gzip(fileBuffer, (err, buffer) => {
                 if (err) {
                     console.error(err);
                 } else {
-                    console.log(buffer.length);
                     fileBuffer = buffer;
                 }
             });
@@ -35,14 +30,15 @@ class ImageService {
             if(!fs.existsSync(imageDirectory)){
                 fs.mkdirSync(imageDirectory, { recursive: true })
             }
-            if(fs.existsSync(image.imageRoute)){
+            if(fs.existsSync(imageDirectory + "/" + image.image + "." + mimetype.split("/")[1])){
                 throw new BaseException("Image exists", 400, "Try another", "Image exists")
             }
-            fs.writeFileSync(image.imageRoute, fileBuffer)
-
+            console.error(imageDirectory + "/" + image.image + "." + mimetype.split("/")[1])
+            fs.writeFileSync(imageDirectory + "/" + image.image + "." + mimetype.split("/")[1], fileBuffer);
             return image.id;
         } catch (error) {
             console.error(error);
+            throw new BaseException("ImageService.saveImage: " + error.message, error.statusCode ?? 400, "Error saving image", "ImageUploadError");
         }
     }
 
@@ -71,28 +67,20 @@ class ImageService {
             if (result == null) {
                 return null;
             }
-
-            
-            const image = new Image(result.imageName, result.mimetype, result.creationUser, result.id, result.creationDate);
-
-            
-            const imageRoute = `${__dirname}/../images/${creationUser}/${image.imageName}`
-
+            const image = new Image(result.image, result.mimetype, result.creationUser, result.id, result.creationDate);
+            const imageRoute = `${__dirname}/../images/${result.creationUser}/${image.image}.${image.mimetype.split("/")[1]}`
+            console.log(imageRoute)
             if(!fs.existsSync(imageRoute)){
                 throw new BaseException("Image doesn't exists", 400, "Probablly been deleted", "Image doesn't exist")
             }
-
             const imageCoppied = fs.readFileSync(imageRoute)
             zlib.gzip(imageCoppied, (err, buffer) => {
                 if (err) {
                     console.error(err);
                 } else {
-                    console.log(buffer.length);
                     imageCoppied = buffer;
                 }
             });
-            console.log('imageCoppied', imageCoppied)
-            
             return {...image, image: imageCoppied};
         } catch (error) {
             console.error(error);

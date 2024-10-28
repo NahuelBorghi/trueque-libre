@@ -14,9 +14,7 @@ async function jwtMiddleware(req, res, next) {
     try {
         // Obtener el token desde la cookie 'Authentication'
         let token = req.cookies["Authentication"];
-        console.log('token', token)
         if (!token) {
-            console.log('no token')
             throw new BaseException(
                 "Token not provided",
                 403,

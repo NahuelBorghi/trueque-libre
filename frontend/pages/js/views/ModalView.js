@@ -194,7 +194,7 @@ class ModalView extends HTMLElement {
     formatImages(){
         return this.images.map((image)=> {
             const formData = new FormData();
-            formData.append('fileData', image.file);
+            formData.append('file', image.file);
             return formData
         })
     }

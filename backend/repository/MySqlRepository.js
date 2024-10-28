@@ -222,16 +222,15 @@ class MySqlRepository {
 
 
     // Image methods
-    async insertImage({ id, imageName, imageRoute, mimetype, creationDate, creationUser }) {
-        const query = ` INSERT INTO Image (id, imageName, imageRoute, mimetype, creationDate, creationUser) VALUES (?, ?, ?, ?, ?, ?); `;
+    async insertImage({ id, image, mimetype, creationDate, creationUser }) {
+        const query = ` INSERT INTO Image (id, image, mimetype, creationDate, creationUser) VALUES (?, ?, ?, ?, ?); `;
         const validationQuery = `SELECT id FROM Users WHERE id = ?`;
         try {
             const [validation] = await this.connection.execute(validationQuery, [creationUser]);
             if (validation.length === 0) {
                 throw new BaseException("User not found", 404, "Not Found", "UserNotFound");
             }
-            console.log({ id, imageName, imageRoute, mimetype, creationDate, creationUser })
-            await this.connection.execute(query, [id, imageName, imageRoute, mimetype, creationDate, creationUser]);
+            await this.connection.execute(query, [id, image, mimetype, creationDate, creationUser]);
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.insertImage: ${error.message}`, error.statusCode ?? 400, "Bad Request", "ImageCreationError");
@@ -255,7 +254,8 @@ class MySqlRepository {
     async insertImagePublicationRelation(idPublication, idUser, idImage) {
         const query = `INSERT INTO ImagePublication (id, idPublication, idUser, idImage) VALUES (?, ?, ?, ?)`;
         const id = generateUUID();
-        values = [id, idPublication, idUser, idImage];
+        console.log({ id, idPublication, idUser, idImage })
+        const values = [id, idPublication, idUser, idImage];
         try {
             await this.connection.execute(query, values);
             return id;
@@ -269,7 +269,6 @@ class MySqlRepository {
     async getTags(limit, offset) {
         const queryData = `SELECT * FROM Tags LIMIT ? OFFSET ?`;
         const queryTotal = `SELECT COUNT(*) as total FROM Tags`;
-        console.log(await this.connection.execute('SELECT VERSION()'))
         try {
             // promise.all para ejecutar las dos consultas en paralelo ;)
             const res = Promise.all([
@@ -281,6 +280,16 @@ class MySqlRepository {
         } catch (error) {
             console.error(error);
             throw new BaseException(`mysqlRepository.getTags: ${error.message}`, error.statusCode ?? 400, "Bad Request", "GetTagsError");
+        }
+    }
+
+    async addTagToPublication(idPublication, idTag) {
+        const query = `INSERT INTO TagPublication (Publications_id, idTags) VALUES (?, ?)`;
+        try {
+            await this.connection.execute(query, [idPublication, idTag]);
+        } catch (error) {
+            console.error(error);
+            throw new BaseException(`mysqlRepository.asociateTagToPublication: ${error.message}`, error.statusCode ?? 400, "Bad Request", "AsociateTagToPublicationError");
         }
     }
 }

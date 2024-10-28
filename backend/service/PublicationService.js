@@ -58,6 +58,17 @@ class PublicationService {
             throw new BaseException(`deletePublicationService: ${error.message}`, 400, "Bad Request", "DeletePublicationError");
         }
     }
+
+    async addTagsToPublication(publicationId, tags) {
+        try {
+            tags = tags.split(",");
+            for (const tag of tags) {
+                await this.mysqlRepository.addTagToPublication(publicationId, tag);
+            }
+        } catch (error) {
+            throw new BaseException(`addTagsToPublicationService: ${error.message}`, 400, "Bad Request", "AddTagsToPublicationError");
+        }
+    }
 }
 
 module.exports = PublicationService;

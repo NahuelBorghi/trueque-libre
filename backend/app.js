@@ -15,7 +15,7 @@ app.use(cors({
         "http://localhost:80",
         "http://localhost:3000",
     ],
-    credentials: true // Permite el envío de cookies
+    credentials: true, // Permite el envío de cookies
 }));
 app.use(parseCookies);
 
