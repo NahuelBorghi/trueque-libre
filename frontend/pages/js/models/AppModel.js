@@ -102,7 +102,7 @@ class AppModel extends EventTarget {
         return { status: "ok", data: [] };
     }
 
-    async submitPublication({ title, description, state, status, exchange, ubication, tags }) {
+    async submitPublication({ title, description, state, status, exchange, ubication, tags, images }) {
         console.log("submitPublication");
         const response = await fetch(`${this._url}/publication`, {
             method: "POST",
@@ -118,21 +118,32 @@ class AppModel extends EventTarget {
             }),
             credentials: "include", // Permite el envio y recepción de cookies
         });
-        return await response.json();
-    }
+        const { id: idPublication } = await response.json();
 
-    async submitImage({ idPublication, images }) {
-        console.log("submitImage");
+        if(idPublication){
+            if(images.length > 0){
+                const promises = images.map((image) =>
+                    fetch(`${this._url}/image/upload?publicationId=${idPublication}`, {
+                        method: "POST",
+                        body: image,
+                        credentials: "include", // Permite el envío y recepción de cookies
+                    })
+                );
+            
+                const dataPromises = await Promise.all(promises);
 
-        const promises = images.map((image) =>
-            fetch(`${this._url}/image/upload?publicationId=${idPublication}`, {
-                method: "POST",
-                body: image,
-                credentials: "include", // Permite el envío y recepción de cookies
-            })
-        );
-
-        return await Promise.all(promises);
+                const errorSubmitingImage = dataPromises.some((item) => {
+                    return !item.ok
+                })
+                
+                if(errorSubmitingImage){
+                    alert("Error al intentar subir una imagen")
+                }
+            }
+            this.dispatchEvent(new CustomEvent("submitPublication"));
+            return
+        }
+        alert("Error, intente de nuevo en unos momentos")
     }
 
     async getImages(idImage) {

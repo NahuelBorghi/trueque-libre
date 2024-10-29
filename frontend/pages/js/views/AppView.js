@@ -19,6 +19,12 @@ class AppView extends HTMLElement {
         this.appendChild(this._renderComponent)
     }
 
+    resetPublications(){
+        if(this._renderComponent instanceof PublicationView){
+            this._renderComponent.resetPublications()
+        }
+    }
+
     renderView(view){
         this.removeChild(this._renderComponent)
         switch (view) {

@@ -25,6 +25,9 @@ class AppController {
 
             this.onUserLoggedOut()
         })
+        modelComponent.addEventListener('submitPublication', (e) => {
+            this._viewComponent.resetPublications()
+        })
     }
 
     onUserLoggedOut(){

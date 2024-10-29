@@ -137,6 +137,19 @@ class PublicationView extends HTMLElement {
         };
     }
 
+    async resetPublications(){
+        this._modalView._modalContainer.style.display = "none";
+        this._innerControler.resetValues();
+        const { data: publications } = await this._innerControler.getPublications();
+        [...this._publicationsContainer.children].forEach((publication) => {
+            this._publicationsContainer.removeChild(publication);
+        });
+        if (publications && publications.length > 0) {
+            const transformedData = this.transformPublications(publications);
+            this.createPublicationsCard(transformedData);
+        }
+    }
+
     async handleOnScroll(event) {
         const scrollTop = event.target.scrollTop;
         const scrollHeight = event.target.scrollHeight;
