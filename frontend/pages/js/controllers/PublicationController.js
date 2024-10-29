@@ -31,7 +31,6 @@ class PublicationController {
         this._isFetching = true;
         console.log("getPublications");
         const data = await this._modelComponent.getPublications(tag).then();
-        console.log("data", data);
         if (data.status === "error") {
             alert(data.message);
         }
@@ -56,6 +55,10 @@ class PublicationController {
 
     onClickCategorie({ detail }) {
         this._viewComponent.handleOnClickTag(detail.target);
+    }
+
+    onClickVisualize({ detail }) {
+        this._viewComponent.openPublicationDetail(detail);
     }
 }
 

@@ -1,5 +1,6 @@
 import { PublicationController } from "../controllers/PublicationController.js";
 import { ModalView } from "./ModalView.js";
+import { PublicationDetailView } from "./PublicationDetailView.js";
 
 class PublicationView extends HTMLElement {
     constructor(modelComponent) {
@@ -9,6 +10,7 @@ class PublicationView extends HTMLElement {
         this._selectedTag = null;
 
         this._innerControler = new PublicationController(this, modelComponent);
+        this._publicationDetailView = new PublicationDetailView(modelComponent);
         this._modalView = new ModalView(modelComponent);
 
         this._navContainer = document.createElement("nav");
@@ -107,6 +109,7 @@ class PublicationView extends HTMLElement {
         this.appendChild(this._navContainer);
         this.appendChild(this._container);
         this.appendChild(this._modalView);
+        this.appendChild(this._publicationDetailView);
     }
 
     connectedCallback() {
@@ -129,12 +132,20 @@ class PublicationView extends HTMLElement {
         this._modalView._modalHeaderClose.onclick = () => {
             this._modalView._modalContainer.style.display = "none";
         };
+        this._publicationDetailView._modalHeaderClose.onclick = () => {
+            this._publicationDetailView._modalContainer.style.display = "none";
+        };
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();
         };
         this._publicationsContainer.onscroll = async (event) => {
             this.handleOnScroll(event);
         };
+    }
+
+    openPublicationDetail(publicationData){
+        this._publicationDetailView.setPublicationData(publicationData)
+        this._publicationDetailView._modalContainer.style.display = 'block'
     }
 
     async resetPublications(){
@@ -312,9 +323,9 @@ class PublicationView extends HTMLElement {
 
                 button.className = "btn btn-primary";
                 button.innerText = "Visualizar";
-                // button.onclick = () => {
-                //     this._innerControler.onClickCategorie(new CustomEvent("categoriePress", { detail: categorie }));
-                // };
+                button.onclick = () => {
+                    this._innerControler.onClickVisualize(new CustomEvent("categoriePress", { detail: publication }));
+                };
 
                 content.appendChild(title);
                 content.appendChild(tagsContainer);
