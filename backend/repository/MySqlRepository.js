@@ -65,6 +65,7 @@ class MySqlRepository {
         const query = `SELECT * FROM Users WHERE id = ?`;
         try {
             const [[result]] = await this.connection.execute(query, [id]);
+            if (!result) throw new BaseException( "User not found", 404, "Not Found", "UserNotFoundError" );
             const user = new User(
                 result.userName,
                 result.password,

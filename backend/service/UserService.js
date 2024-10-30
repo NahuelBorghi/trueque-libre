@@ -45,6 +45,14 @@ class UserService {
             throw new BaseException(`logoutUserService: ${error.message}`, error.statusCode??400, "Bad Request", "UserLogoutError");
         }
     }
+
+    async getUserById(id) {
+        try {
+            return await this.mysqlRepository.getUserById(id);
+        } catch (error) {
+            throw new BaseException(`getUserByIdService: ${error.message}`, error.statusCode??400, error.stack??"Bad Request", "UserNotFoundError");
+        }
+    }
 }
 
 module.exports = UserService;

@@ -58,6 +58,20 @@ class UserController {
     async verify(req, res){
         res.status(200).send({ message: 'User verified' });
     }
+    async getUserById(req, res) {
+        const label = `-------------------- Get user by ID - ${Date.now()}`;
+        console.time(label);
+        try {
+            const { id } = req.query;
+            const user = await this.userService.getUserById(id);
+            console.timeLog(label, "user found successfully");
+            console.timeEnd(label);
+            return res.status(200).send(user);
+        } catch (error) {
+            console.timeEnd(label)
+            throw new BaseException(`UserController.getUserById: ${error.message}`, error.statusCode??400, "Bad Request", "UserGetError");
+        }
+    }
 }
 
 module.exports = UserController;

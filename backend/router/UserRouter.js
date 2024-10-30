@@ -1,6 +1,7 @@
 // // Routes for UserController
 const UserRoutes = require("express").Router();
 const UserController = require("../controller/UserController.js");
+const User = require("../model/UserModel.js");
 const userController = new UserController();
 
 UserRoutes.post("/register", async (req, res, next) => {
@@ -38,6 +39,14 @@ UserRoutes.put("/logout", async (req, res, next) => {
 UserRoutes.get("/verify", async (req, res, next)=>{
     try{
         await userController.verify(req, res);
+    } catch (error){
+        next(error);
+    }
+})
+
+UserRoutes.get("/userById", async (req, res, next)=>{
+    try{
+        await userController.getUserById(req, res);
     } catch (error){
         next(error);
     }
