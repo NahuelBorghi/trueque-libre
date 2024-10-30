@@ -5,14 +5,26 @@ class PublicationDetailController {
     }
 
     async getImage(idImage) {
-        if(!idImage) return
+        if (!idImage) return;
         const data = await this._modelComponent.getImages(idImage);
 
         if (!data.ok) {
-            console.error("ERROR EN TRAER IMAGEN")
-            return
+            console.error("ERROR EN TRAER IMAGEN");
+            return;
         }
         return await data.blob();
+    }
+
+    nextImage() {
+        this._viewComponent.plusSlides(1);
+    }
+
+    previousImage() {
+        this._viewComponent.plusSlides(-1);
+    }
+
+    closeModal() {
+        this._viewComponent.resetModal();
     }
 }
 

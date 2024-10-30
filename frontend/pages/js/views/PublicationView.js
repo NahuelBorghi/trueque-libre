@@ -132,9 +132,6 @@ class PublicationView extends HTMLElement {
         this._modalView._modalHeaderClose.onclick = () => {
             this._modalView._modalContainer.style.display = "none";
         };
-        this._publicationDetailView._modalHeaderClose.onclick = () => {
-            this._publicationDetailView._modalContainer.style.display = "none";
-        };
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();
         };
