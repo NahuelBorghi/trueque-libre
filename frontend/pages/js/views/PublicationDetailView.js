@@ -84,12 +84,6 @@ class PublicationDetailView extends HTMLElement {
 
         this._stateContainer.appendChild(this._state);
 
-        this._usuarioContainer = document.createElement("div");
-        this._usuario = document.createElement("h5");
-        this._usuario.innerText = "Usuario";
-
-        this._usuarioContainer.appendChild(this._usuario);
-
         this._dateContainer = document.createElement("div");
 
         this._tagsContainer = document.createElement("div");
@@ -107,7 +101,6 @@ class PublicationDetailView extends HTMLElement {
         this._dataContainer.appendChild(this._exchangeContainer);
         this._dataContainer.appendChild(this._stateContainer);
         this._dataContainer.appendChild(this._tagsContainer);
-        this._dataContainer.appendChild(this._usuarioContainer);
 
         this._container.appendChild(this._imagesContainer);
         this._container.appendChild(this._dataContainer);
@@ -131,9 +124,7 @@ class PublicationDetailView extends HTMLElement {
         this.appendChild(this._modalContainer);
     }
 
-    setPublicationData(publicationData) {
-        console.log("PublicationDetailView setPublicationData", publicationData);
-
+    async setPublicationData(publicationData) {
         const {
             id,
             title,
@@ -149,8 +140,15 @@ class PublicationDetailView extends HTMLElement {
 
         this._title.innerText = title;
         const descriptionElement = document.createElement("p");
+        descriptionElement.style.margin = '0px'
         descriptionElement.innerText = description;
         this._descriptionContainer.appendChild(descriptionElement);
+
+        const data = await this._innerControler.getUser(creationUser);
+
+        const creationUserElement = document.createElement("p");
+        creationUserElement.innerText = `Creado por ${data.userName}`;
+        this._descriptionContainer.appendChild(creationUserElement);
 
         const stateElement = document.createElement("p");
         stateElement.innerText = state;
@@ -159,10 +157,6 @@ class PublicationDetailView extends HTMLElement {
         const exchangeElement = document.createElement("p");
         exchangeElement.innerText = exchange;
         this._exchangeContainer.appendChild(exchangeElement);
-
-        const creationUserElement = document.createElement("p");
-        creationUserElement.innerText = creationUser;
-        this._usuarioContainer.appendChild(creationUserElement);
 
         const creationDateElement = document.createElement("p");
         creationDateElement.innerText = `Publicado el ${creationDate.split("T")[0]}`;
@@ -219,11 +213,9 @@ class PublicationDetailView extends HTMLElement {
         });
 
         if (n > images.length) {
-            console.log("this.imageIndex > images.length");
             this.imageIndex = 1;
         }
         if (n < 1) {
-            console.log("this.imageIndex < 1");
             this.imageIndex = images.length;
         }
         for (let i = 0; i < images.length; i++) {
@@ -262,15 +254,8 @@ class PublicationDetailView extends HTMLElement {
             this._stateContainer.removeChild(i);
         });
 
-        const usuarioChildren = [...this._usuarioContainer.children];
-        usuarioChildren.forEach((i, index) => {
-            if (index === 0) return;
-            this._usuarioContainer.removeChild(i);
-        });
-
         const dateChildren = [...this._dateContainer.children];
-        dateChildren.forEach((i, index) => {
-            if (index === 0) return;
+        dateChildren.forEach((i) => {
             this._dateContainer.removeChild(i);
         });
 

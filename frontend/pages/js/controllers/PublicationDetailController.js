@@ -15,6 +15,11 @@ class PublicationDetailController {
         return await data.blob();
     }
 
+    async getUser(idUser) {
+        const data = await this._modelComponent.getUserById(idUser);
+        return data;
+    }
+
     nextImage() {
         this._viewComponent.plusSlides(1);
     }

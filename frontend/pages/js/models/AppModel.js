@@ -120,8 +120,8 @@ class AppModel extends EventTarget {
         });
         const { id: idPublication } = await response.json();
 
-        if(idPublication){
-            if(images.length > 0){
+        if (idPublication) {
+            if (images.length > 0) {
                 const promises = images.map((image) =>
                     fetch(`${this._url}/image/upload?publicationId=${idPublication}`, {
                         method: "POST",
@@ -129,21 +129,21 @@ class AppModel extends EventTarget {
                         credentials: "include", // Permite el envío y recepción de cookies
                     })
                 );
-            
+
                 const dataPromises = await Promise.all(promises);
 
                 const errorSubmitingImage = dataPromises.some((item) => {
-                    return !item.ok
-                })
-                
-                if(errorSubmitingImage){
-                    alert("Error al intentar subir una imagen")
+                    return !item.ok;
+                });
+
+                if (errorSubmitingImage) {
+                    alert("Error al intentar subir una imagen");
                 }
             }
             this.dispatchEvent(new CustomEvent("submitPublication"));
-            return
+            return;
         }
-        alert("Error, intente de nuevo en unos momentos")
+        alert("Error, intente de nuevo en unos momentos");
     }
 
     async getImages(idImage) {
@@ -154,6 +154,18 @@ class AppModel extends EventTarget {
         });
 
         return response;
+    }
+
+    async getUserById(idUser) {
+        console.log("getUserById");
+
+        const response = await fetch(`${this._url}/user/userById?id=${idUser}`, {
+            credentials: "include", // Permite el envío y recepción de cookies
+        });
+
+        const data = await response.json();
+
+        return data;
     }
 
     resetValues() {
