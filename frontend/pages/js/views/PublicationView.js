@@ -118,6 +118,9 @@ class PublicationView extends HTMLElement {
         this._navButtonLogout.onclick = () => {
             this._innerControler.onPressSignOut();
         };
+        this._sideBarButtonExplorar.onclick = () => {
+            this._innerControler.newPublications()
+        }
         this._sideBarButtonCrearTrueques.onclick = () => {
             if (this.categories.length > 0) {
                 this.categories.forEach((item) => {

@@ -60,6 +60,10 @@ class PublicationController {
     onClickVisualize({ detail }) {
         this._viewComponent.openPublicationDetail(detail);
     }
+
+    newPublications() {
+        this._viewComponent.resetPublications();
+    }
 }
 
 export { PublicationController };
