@@ -313,8 +313,9 @@ class PublicationView extends HTMLElement {
                 });
 
                 const description = document.createElement("p");
-                description.className = "card-text";
-                description.innerText = publication.description.slice(0, 100).concat("...");
+                description.className = "card-text overflow-hidden";
+                description.style = "display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;";
+                description.innerText = publication.description;
 
                 const button = document.createElement("button");
 

@@ -83,9 +83,9 @@ class AppModel extends EventTarget {
 
     async getPublications(tag) {
         console.log("getPublications");
-        if (this._offsetPublications * 10 <= this._totalPublications) {
+        if (this._offsetPublications * 15 <= this._totalPublications) {
             const response = await fetch(
-                `${this._url}/publication?limit=10&offset=${this._offsetPublications}${
+                `${this._url}/publication?limit=15&offset=${this._offsetPublications}${
                     tag != null ? `&tagsFilter=${tag}` : ""
                 }`,
                 {
