@@ -58,7 +58,10 @@ class PublicationDetailView extends HTMLElement {
         this._imagesContainer.appendChild(this._buttonRight);
 
         this._dataContainer = document.createElement("div");
-        this._dataContainer.className = "w-25 h-100 p-3 d-flex flex-column gap-2";
+        this._dataContainer.className = "w-100 p-3 d-flex flex-column gap-2";
+        this._dataContainer.className = "w-100 p-3 d-flex flex-column gap-2";
+        this._dataContainer.style.overflow = "auto";
+        this._dataContainer.style.height = "85%";
 
         this._titleContainer = document.createElement("div");
         this._title = document.createElement("h2");
@@ -95,6 +98,19 @@ class PublicationDetailView extends HTMLElement {
         this._tagsContainer.appendChild(this._tags);
         this._tagsContainer.appendChild(this._tagsContent);
 
+        this._chatContainer = document.createElement("div");
+        this._chatContainer.classList = "d-flex flex-column align-items-center p-3 gap-2";
+        this._textarea = document.createElement("textarea");
+        this._textarea.className = "form-control w-100";
+        this._textarea.placeholder = "Envie un mensaje";
+        this._textarea.value = "Buenas. ¿Sigue disponible?";
+        this._buttonSend = document.createElement("button");
+        this._buttonSend.className = "btn btn-primary";
+        this._buttonSend.innerText = "Enviar";
+
+        this._chatContainer.appendChild(this._textarea);
+        this._chatContainer.appendChild(this._buttonSend);
+
         this._dataContainer.appendChild(this._titleContainer);
         this._dataContainer.appendChild(this._dateContainer);
         this._dataContainer.appendChild(this._descriptionContainer);
@@ -102,8 +118,13 @@ class PublicationDetailView extends HTMLElement {
         this._dataContainer.appendChild(this._stateContainer);
         this._dataContainer.appendChild(this._tagsContainer);
 
+        this._content = document.createElement("div");
+        this._content.className = "w-25 h-100 d-flex flex-column justify-content-between";
+        this._content.appendChild(this._dataContainer);
+        this._content.appendChild(this._chatContainer);
+
         this._container.appendChild(this._imagesContainer);
-        this._container.appendChild(this._dataContainer);
+        this._container.appendChild(this._content);
 
         this._modalFooter = document.createElement("div");
         this._modalFooter.className = "modal-footer bg-body-tertiary";
@@ -140,7 +161,7 @@ class PublicationDetailView extends HTMLElement {
 
         this._title.innerText = title;
         const descriptionElement = document.createElement("p");
-        descriptionElement.style.margin = '0px'
+        descriptionElement.style.margin = "0px";
         descriptionElement.innerText = description;
         this._descriptionContainer.appendChild(descriptionElement);
 
