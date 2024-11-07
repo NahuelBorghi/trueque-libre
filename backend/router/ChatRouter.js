@@ -1,37 +1,53 @@
-// // Routes for ChatController
 const ChatRoutes = require("express").Router();
 const ChatController = require("../controller/ChatController.js");
 const chatController = new ChatController();
-// ChatRoutes.post("/register", async (req, res, next) => {
-//     try {
-//         await chatController.create(req, res);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
 
-// ChatRoutes.post("/login", async (req, res, next) => {
-//     try {
-//         await chatController.login(req, res);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+ChatRoutes.get("/events/:userId", async (req, res, next) => {
+    try {
+        await chatController.getEvents(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
 
-// ChatRoutes.put("/", async (req, res, next) => {
-//     try {
-//         await chatController.update(req, res);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+ChatRoutes.post("/send", async (req, res, next) => {
+    try {
+        await chatController.sendMessage(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
 
-// ChatRoutes.delete("/", async (req, res, next) => {
-//     try {
-//         await chatController.delete(req, res);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+ChatRoutes.put("/read", async (req, res, next) => {
+    try {
+        await chatController.readMessage(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+ChatRoutes.post("/create", async (req, res, next) => {
+    try {
+        await chatController.createChat(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+ChatRoutes.get("/chats/:userId", async (req, res, next) => {
+    try {
+        await chatController.findChats(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
+
+ChatRoutes.get("/messages/:chatId", async (req, res, next) => {
+    try {
+        await chatController.getMessages(req, res);
+    } catch (error) {
+        next(error);
+    }
+});
 
 module.exports = ChatRoutes;
