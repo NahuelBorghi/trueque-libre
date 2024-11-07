@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 class MongoRepository {
     constructor() {
@@ -65,11 +65,18 @@ class MongoRepository {
         return result;
     }
 
+    async getChatUsers(chatId) {
+        const chat = await this.chatsCollection.findOne({
+            _id: new ObjectId(chatId),
+        });
+        return chat ? chat.usersIds : [];
+    }
+
     async pollMessages(interval, callback) {
         setInterval(async () => {
             try {
                 const query = this.lastCheckedMessageId ? { _id: { $gt: this.lastCheckedMessageId } } : {};
-                const newMessages = await this.messagesCollection .find(query) .toArray();
+                const newMessages = await this.messagesCollection.find(query).toArray();
                 if (newMessages.length > 0) {
                     callback(newMessages);
                     this.lastCheckedMessageId = newMessages[newMessages.length - 1]._id;
@@ -84,7 +91,7 @@ class MongoRepository {
         setInterval(async () => {
             try {
                 const query = this.lastCheckedChatId ? { _id: { $gt: this.lastCheckedChatId } } : {};
-                const newChats = await this.chatsCollection .find(query).toArray();
+                const newChats = await this.chatsCollection.find(query).toArray();
                 if (newChats.length > 0) {
                     callback(newChats);
                     this.lastCheckedChatId = newChats[newChats.length - 1]._id;

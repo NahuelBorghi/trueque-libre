@@ -17,13 +17,14 @@ class ChatController {
 
         // Configura el polling para los mensajes
         this.chatService.pollMessages((newMessages) => {
-            if (!newMessages) return;
-            newMessages.forEach((message) => {
+            newMessages.forEach(async(message) => {
                 const { chatId } = message;
-                const chatUsers = chatId.split("-");
-                chatUsers.forEach((userId) => {
-                    sendEvent(userId, message);
-                });
+                const chatUsers = await this.chatService.getChatUsers(chatId);
+                if (chatUsers) {
+                    chatUsers.forEach((userId) => {
+                        sendEvent(userId, message);
+                    });
+                }
             });
         });
 
