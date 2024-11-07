@@ -103,6 +103,26 @@ class PublicationView extends HTMLElement {
         this._publicationsContainer.className = "bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3";
         this._publicationsContainer.style = "width: 80%; overflow: scroll; height: 100%";
 
+        this._chatContainer = document.createElement("div");
+        this._chatContainer.className = "d-flex flex-row";
+        this._chatContainer.style = "width: 80%; height: 100%";
+
+        this._chatMessagesContainer = document.createElement('div')
+        this._chatMessagesContainer.className = 'h-100 bg-body-secondary'
+        this._chatMessagesContainer.style.width = '80%'
+        const div = document.createElement('div')
+        div.innerText = 'adlkjaklsdjklas'
+
+        this._chatMessagesContainer.appendChild(div)
+
+        this._chatList = document.createElement('div')
+        this._chatList.className = 'h-100 bg-body-tertiary border-1 border-end'
+        this._chatList.style.width = '20%'
+        this._chatList.appendChild(div)
+
+        this._chatContainer.appendChild(this._chatList)
+        this._chatContainer.appendChild(this._chatMessagesContainer)
+
         this._container.appendChild(this._sideBarContainer);
         this._container.appendChild(this._publicationsContainer);
 
@@ -118,9 +138,13 @@ class PublicationView extends HTMLElement {
         this._navButtonLogout.onclick = () => {
             this._innerControler.onPressSignOut();
         };
+        this._sideBarButtonBandeja.onclick = () => {
+            this._container.removeChild(this._container.childNodes[1]);
+            this._container.appendChild(this._chatContainer);
+        };
         this._sideBarButtonExplorar.onclick = () => {
-            this._innerControler.newPublications()
-        }
+            this._innerControler.onPressExplorar();
+        };
         this._sideBarButtonCrearTrueques.onclick = () => {
             if (this.categories.length > 0) {
                 this.categories.forEach((item) => {
@@ -133,7 +157,7 @@ class PublicationView extends HTMLElement {
             this._modalView._modalContainer.style.display = "block";
         };
         this._modalView._modalHeaderClose.onclick = () => {
-            this._modalView.closeModal()
+            this._modalView.closeModal();
         };
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();
@@ -143,12 +167,27 @@ class PublicationView extends HTMLElement {
         };
     }
 
-    openPublicationDetail(publicationData){
-        this._publicationDetailView.setPublicationData(publicationData)
-        this._publicationDetailView._modalContainer.style.display = 'block'
+    addPublications() {
+        console.log("addPublications");
+        if (this._container.childNodes[1]) {
+            this._container.removeChild(this._container.childNodes[1]);
+        }
+        this._innerControler.fetchNewPublications();
+        this._container.appendChild(this._publicationsContainer);
     }
 
-    async resetPublications(){
+    closeModal() {
+        console.log("closeModal");
+        this._modalView._modalContainer.style.display = "none";
+    }
+
+    openPublicationDetail(publicationData) {
+        this._publicationDetailView.setPublicationData(publicationData);
+        this._publicationDetailView._modalContainer.style.display = "block";
+    }
+
+    async resetPublications() {
+        console.log("resetPublications");
         this._modalView._modalContainer.style.display = "none";
         this._innerControler.resetValues();
         const { data: publications } = await this._innerControler.getPublications();
@@ -284,7 +323,7 @@ class PublicationView extends HTMLElement {
                 const data = await this._innerControler.getImage(publication.images?.[0]);
                 if (data) {
                     const imgUrl = URL.createObjectURL(data);
-                    console.log('imgUrl', imgUrl)
+                    console.log("imgUrl", imgUrl);
                     image.src = imgUrl;
                 }
 

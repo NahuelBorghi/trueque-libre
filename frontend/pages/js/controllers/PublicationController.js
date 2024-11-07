@@ -61,8 +61,12 @@ class PublicationController {
         this._viewComponent.openPublicationDetail(detail);
     }
 
-    newPublications() {
+    fetchNewPublications() {
         this._viewComponent.resetPublications();
+    }
+
+    onPressExplorar() {
+        this._viewComponent.addPublications();
     }
 }
 
