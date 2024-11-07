@@ -6,7 +6,6 @@ class PublicationController {
     }
 
     async onPressSignOut() {
-        console.log("logout");
         const data = await this._modelComponent.logout();
         if (data.status === "error") {
             alert(data.message);
@@ -14,7 +13,6 @@ class PublicationController {
     }
 
     async getCategories() {
-        console.log("getCategories");
         const data = await this._modelComponent.getCategories();
         if (data.status === "error") {
             alert(data.message);
@@ -29,7 +27,6 @@ class PublicationController {
             this._tag = null;
         }
         this._isFetching = true;
-        console.log("getPublications");
         const data = await this._modelComponent.getPublications(tag).then();
         if (data.status === "error") {
             alert(data.message);
