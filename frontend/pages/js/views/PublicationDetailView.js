@@ -4,6 +4,9 @@ class PublicationDetailView extends HTMLElement {
     constructor(modelComponent) {
         super();
         this.imageIndex = 1;
+        this._idUser = null;
+        this._idUserPublication = null;
+
         this._innerControler = new PublicationDetailController(this, modelComponent);
 
         this._modalContainer = document.createElement("div");
@@ -98,14 +101,14 @@ class PublicationDetailView extends HTMLElement {
         this._tagsContainer.appendChild(this._tags);
         this._tagsContainer.appendChild(this._tagsContent);
 
-        this._chatContainer = document.createElement("div");
+        this._chatContainer = document.createElement("form");
         this._chatContainer.classList = "d-flex flex-column align-items-center p-3 gap-2";
         this._textarea = document.createElement("textarea");
         this._textarea.className = "form-control w-100";
         this._textarea.placeholder = "Envie un mensaje";
         this._textarea.value = "Buenas. ¿Sigue disponible?";
         this._buttonSend = document.createElement("button");
-        this._buttonSend.className = "btn btn-primary";
+        this._buttonSend.className = "btn btn-primary w-100";
         this._buttonSend.innerText = "Enviar";
 
         this._chatContainer.appendChild(this._textarea);
@@ -158,6 +161,7 @@ class PublicationDetailView extends HTMLElement {
             publicationTags,
             images,
         } = publicationData;
+        this._idUserPublication = creationUser;
 
         this._title.innerText = title;
         const descriptionElement = document.createElement("p");
@@ -226,6 +230,10 @@ class PublicationDetailView extends HTMLElement {
 
             this._imagesContainer.appendChild(imageElement);
         }
+
+        if (this._idUser === creationUser) {
+            this._content.removeChild(this._content.children[1]);
+        }
     }
 
     showSlides(n) {
@@ -251,6 +259,8 @@ class PublicationDetailView extends HTMLElement {
     }
 
     resetModal() {
+        this._content.appendChild(this._chatContainer);
+
         const imagesChildren = [...this._imagesContainer.children];
         imagesChildren.forEach((i) => {
             if (i.id === "ignore") return;
@@ -289,7 +299,14 @@ class PublicationDetailView extends HTMLElement {
         this._modalContainer.style.display = "none";
     }
 
+    setUserId() {
+        const payload = document.cookie.split("=")[1].split(".")[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        this._idUser = decodedPayload.id;
+    }
+
     connectedCallback() {
+        this.setUserId();
         this._modalHeaderClose.onclick = () => {
             this._innerControler.closeModal();
         };
@@ -300,6 +317,15 @@ class PublicationDetailView extends HTMLElement {
 
         this._buttonLeft.onclick = () => {
             this._innerControler.previousImage();
+        };
+
+        this._chatContainer.onsubmit = async (event) => {
+            event.preventDefault();
+            const message = this._textarea.value;
+            const data = await this._innerControler.createChat(this._idUser, this._idUserPublication, message);
+            if(data) {
+                this.resetModal()
+            }
         };
 
         document.onkeydown = (event) => {

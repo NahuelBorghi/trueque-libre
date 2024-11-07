@@ -40,21 +40,9 @@ class PublicationController {
         const data = await this._modelComponent.getImages(idImage);
 
         if (!data.ok) {
-            console.error("ERROR EN TRAER IMAGEN");
             return;
         }
         return await data.blob();
-    }
-
-    async getChats(idUser) {
-        const { chatsData } = await this._modelComponent.getChats(idUser).then();
-
-        this._viewComponent.handleListChat(chatsData);
-    }
-
-    async getUser(idUser) {
-        const data = await this._modelComponent.getUserById(idUser);
-        return data;
     }
 
     resetValues() {
@@ -83,6 +71,10 @@ class PublicationController {
 
     onEventError(error) {
         this._viewComponent.handleEventError(error);
+    }
+
+    onPressBandeja() {
+        this._viewComponent.handlePressBandeja();
     }
 }
 

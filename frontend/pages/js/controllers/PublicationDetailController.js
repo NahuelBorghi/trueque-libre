@@ -31,6 +31,17 @@ class PublicationDetailController {
     closeModal() {
         this._viewComponent.resetModal();
     }
+
+    async createChat(idUserSender, idUserReceptor, message) {
+        const dataChat = await this._modelComponent.createChat(idUserSender, idUserReceptor);
+        if (dataChat) {
+            const {
+                chatData: { insertedId },
+            } = dataChat;
+            await this._modelComponent.sendMessage(idUserSender, insertedId, message);
+            return true;
+        }
+    }
 }
 
 export { PublicationDetailController };

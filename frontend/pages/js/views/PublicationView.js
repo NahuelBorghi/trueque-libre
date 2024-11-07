@@ -1,5 +1,6 @@
 import { PublicationController } from "../controllers/PublicationController.js";
 import { ModalView } from "./ModalView.js";
+import { ChatView } from "./ChatView.js";
 import { PublicationDetailView } from "./PublicationDetailView.js";
 
 class PublicationView extends HTMLElement {
@@ -17,6 +18,7 @@ class PublicationView extends HTMLElement {
         this._innerControler = new PublicationController(this, modelComponent);
         this._publicationDetailView = new PublicationDetailView(modelComponent);
         this._modalView = new ModalView(modelComponent);
+        this._chatView = new ChatView(modelComponent);
 
         this._navContainer = document.createElement("nav");
         this._navContainer.className = "navbar bg-body-tertiary border-1 border-bottom";
@@ -28,17 +30,17 @@ class PublicationView extends HTMLElement {
         this._navForm.className = "d-flex";
         this._navForm.setAttribute("role", "search");
 
-        this._navFormInput = document.createElement("input");
-        this._navFormInput.className = "form-control me-2";
-        this._navFormInput.type = "search";
-        this._navFormInput.placeholder = "Buscar";
+        this._imagenISFT = document.createElement("img");
+        this._imagenISFT.src = '../../assets/isft.png'
+        this._imagenISFT.style.height = "100%"
+        this._imagenISFT.style.width  = "110px"
 
         this._navButtonLogout = document.createElement("button");
         this._navButtonLogout.className = "btn btn-secondary";
         this._navButtonLogout.type = "button";
         this._navButtonLogout.innerText = "Cerrar sesión";
 
-        this._navForm.appendChild(this._navFormInput);
+        this._navForm.appendChild(this._imagenISFT);
         this._navContent.appendChild(this._navForm);
         this._navContent.appendChild(this._navButtonLogout);
         this._navContainer.appendChild(this._navContent);
@@ -108,22 +110,6 @@ class PublicationView extends HTMLElement {
         this._publicationsContainer.className = "bg-body-secondary d-flex flex-row flex-wrap gap-4 p-3";
         this._publicationsContainer.style = "width: 80%; overflow: scroll; height: 100%";
 
-        this._chatContainer = document.createElement("div");
-        this._chatContainer.className = "d-flex flex-row";
-        this._chatContainer.style = "width: 80%; height: 100%";
-
-        this._chatMessagesContainer = document.createElement("div");
-        this._chatMessagesContainer.className = "h-100 bg-body-secondary";
-        this._chatMessagesContainer.style.width = "80%";
-
-        this._chatList = document.createElement("div");
-        this._chatList.className =
-            "h-100 bg-body-tertiary border-1 border-end p-3 overflow-auto d-flex flex-column gap-2";
-        this._chatList.style.width = "20%";
-
-        this._chatContainer.appendChild(this._chatList);
-        this._chatContainer.appendChild(this._chatMessagesContainer);
-
         this._container.appendChild(this._sideBarContainer);
         this._container.appendChild(this._publicationsContainer);
 
@@ -137,16 +123,21 @@ class PublicationView extends HTMLElement {
         this.handleStartEvent();
         this.getCategories();
         this.getPublications();
+
         this._navButtonLogout.onclick = () => {
+            this._innerControler.onPressExplorar();
             this._eventSource.close();
             this._innerControler.onPressSignOut();
         };
+
         this._sideBarButtonBandeja.onclick = async () => {
-            this._innerControler.getChats(this._idUser);
+            this._innerControler.onPressBandeja();
         };
+
         this._sideBarButtonExplorar.onclick = () => {
             this._innerControler.onPressExplorar();
         };
+
         this._sideBarButtonCrearTrueques.onclick = () => {
             if (this._categories.length > 0) {
                 this._categories.forEach((item) => {
@@ -158,12 +149,15 @@ class PublicationView extends HTMLElement {
             }
             this._modalView._modalContainer.style.display = "block";
         };
+
         this._modalView._modalHeaderClose.onclick = () => {
             this._modalView.closeModal();
         };
+
         this._sideBarCategoriesSearch.oninput = () => {
             this.searchCategories();
         };
+
         this._publicationsContainer.onscroll = async (event) => {
             this.handleOnScroll(event);
         };
@@ -174,7 +168,7 @@ class PublicationView extends HTMLElement {
 
         this._eventSource.onmessage = (event) => {
             console.log("New message:", event.data);
-            this._innerControler.onEventMessage(event);
+            this._innerControler.onEventMessage(event.data);
         };
 
         this._eventSource.onerror = (err) => {
@@ -195,52 +189,31 @@ class PublicationView extends HTMLElement {
     }
 
     handleEventMessage(data) {
-        console.log("handleEventMessage data", data);
+        if(data){
+            const dataParsed = JSON.parse(data);
+            if (this._container.childNodes[1] !== this._chatView) {
+                this._sideBarButtonBandeja.className = this._sideBarButtonBandeja.className.replace(
+                    "btn-outline-dark",
+                    "btn-outline-primary"
+                );
+            }
+            if (dataParsed.type === "chat") {
+                this._chatView.getChats();
+                return
+            }
+            this._chatView.createMessageTemplate(dataParsed);
+        }
     }
 
-    handleListChat(chats) {
-        if (chats) {
-            [...this._chatList.children].forEach((i) => this._chatList.removeChild(i));
-
-            chats.forEach(async (chat) => {
-                const container = document.createElement("div");
-                container.className = "card";
-                container.role = "button";
-
-                const content = document.createElement("div");
-                content.className = "card-body";
-
-                const fecha = new Date(chat.createdAt);
-
-                const formatter = new Intl.DateTimeFormat("es", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                });
-
-                const fechaFormateada = formatter.format(fecha);
-
-                const date = document.createElement("h6");
-                date.className = "card-subtitle text-body-secondary mb-2";
-                date.innerText = fechaFormateada;
-
-                const user = await this._innerControler.getUser(chat.usersIds[1]);
-                const text = document.createElement("p");
-                text.className = "card-text";
-                text.innerText = user.userName;
-
-                content.appendChild(date);
-                content.appendChild(text);
-                container.appendChild(content);
-                this._chatList.appendChild(container);
-            });
-
-            if (this._container.childNodes[1] !== this._chatContainer) {
-                this._container.removeChild(this._container.childNodes[1]);
-                this._container.appendChild(this._chatContainer);
-            }
+    handlePressBandeja() {
+        if (this._container.childNodes[1] !== this._chatContainer) {
+            this._container.removeChild(this._container.childNodes[1]);
+            this._container.appendChild(this._chatView);
+            this._sideBarButtonBandeja.className = this._sideBarButtonBandeja.className.replace(
+                "btn-outline-primary",
+                "btn-outline-dark"
+            );
+            this._chatView.getChats();
         }
     }
 

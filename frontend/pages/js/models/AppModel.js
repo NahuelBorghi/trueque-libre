@@ -171,6 +171,45 @@ class AppModel extends EventTarget {
         return data;
     }
 
+    async createChat(idUserSender, idUserReceptor) {
+        const response = await fetch(`${this._url}/chat/create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ usersIds: [idUserSender, idUserReceptor] }),
+            credentials: "include", // Permite el envío y recepción de cookies
+        });
+
+        const data = await response.json();
+        console.log("createChat data", data);
+
+        return data;
+    }
+
+    async sendMessage(idUser, idChat, message) {
+        const response = await fetch(`${this._url}/chat/send`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: idUser, chatId: idChat, message }),
+            credentials: "include", // Permite el envío y recepción de cookies
+        });
+
+        const data = await response.json();
+        console.log("sendMessage data", data);
+
+        return data;
+    }
+
+    async getMessages(idChat) {
+        const response = await fetch(`${this._url}/chat/messages/${idChat}`, {
+            credentials: "include", // Permite el envío y recepción de cookies
+        });
+
+        const data = await response.json();
+        console.log("getMessages data", data);
+
+        return data;
+    }
+
     resetValues() {
         this._offsetPublications = 0;
         this._totalPublications = 0;
