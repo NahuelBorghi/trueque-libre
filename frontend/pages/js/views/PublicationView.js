@@ -8,6 +8,7 @@ class PublicationView extends HTMLElement {
         this._isLogged = false;
         this._eventSource = {};
         this._eventRetry = 0;
+        this._idUser = null;
 
         this._userChat = [];
         this._categories = [];
@@ -114,15 +115,11 @@ class PublicationView extends HTMLElement {
         this._chatMessagesContainer = document.createElement("div");
         this._chatMessagesContainer.className = "h-100 bg-body-secondary";
         this._chatMessagesContainer.style.width = "80%";
-        const div = document.createElement("div");
-        div.innerText = "adlkjaklsdjklas";
-
-        this._chatMessagesContainer.appendChild(div);
 
         this._chatList = document.createElement("div");
-        this._chatList.className = "h-100 bg-body-tertiary border-1 border-end";
+        this._chatList.className =
+            "h-100 bg-body-tertiary border-1 border-end p-3 overflow-auto d-flex flex-column gap-2";
         this._chatList.style.width = "20%";
-        this._chatList.appendChild(div);
 
         this._chatContainer.appendChild(this._chatList);
         this._chatContainer.appendChild(this._chatMessagesContainer);
@@ -144,9 +141,8 @@ class PublicationView extends HTMLElement {
             this._eventSource.close();
             this._innerControler.onPressSignOut();
         };
-        this._sideBarButtonBandeja.onclick = () => {
-            this._container.removeChild(this._container.childNodes[1]);
-            this._container.appendChild(this._chatContainer);
+        this._sideBarButtonBandeja.onclick = async () => {
+            this._innerControler.getChats(this._idUser);
         };
         this._sideBarButtonExplorar.onclick = () => {
             this._innerControler.onPressExplorar();
@@ -188,7 +184,9 @@ class PublicationView extends HTMLElement {
 
     handleStartEvent() {
         if (this._isLogged) {
-            this._eventSource = new EventSource("http://localhost:3000/events");
+            this._eventSource = new EventSource(`http://localhost:8080/chat/events/${this._idUser}`, {
+                withCredentials: true,
+            });
         }
     }
 
@@ -200,8 +198,60 @@ class PublicationView extends HTMLElement {
         console.log("handleEventMessage data", data);
     }
 
+    handleListChat(chats) {
+        if (chats) {
+            [...this._chatList.children].forEach((i) => this._chatList.removeChild(i));
+
+            chats.forEach(async (chat) => {
+                const container = document.createElement("div");
+                container.className = "card";
+                container.role = "button";
+
+                const content = document.createElement("div");
+                content.className = "card-body";
+
+                const fecha = new Date(chat.createdAt);
+
+                const formatter = new Intl.DateTimeFormat("es", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
+
+                const fechaFormateada = formatter.format(fecha);
+
+                const date = document.createElement("h6");
+                date.className = "card-subtitle text-body-secondary mb-2";
+                date.innerText = fechaFormateada;
+
+                const user = await this._innerControler.getUser(chat.usersIds[1]);
+                const text = document.createElement("p");
+                text.className = "card-text";
+                text.innerText = user.userName;
+
+                content.appendChild(date);
+                content.appendChild(text);
+                container.appendChild(content);
+                this._chatList.appendChild(container);
+            });
+
+            if (this._container.childNodes[1] !== this._chatContainer) {
+                this._container.removeChild(this._container.childNodes[1]);
+                this._container.appendChild(this._chatContainer);
+            }
+        }
+    }
+
     setLogged(isLogged) {
         this._isLogged = isLogged;
+    }
+
+    setUserId() {
+        const payload = document.cookie.split("=")[1].split(".")[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        this._idUser = decodedPayload.id;
     }
 
     addPublications() {

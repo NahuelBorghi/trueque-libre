@@ -160,6 +160,17 @@ class AppModel extends EventTarget {
         return data;
     }
 
+    async getChats(idUser) {
+        const response = await fetch(`${this._url}/chat/chats/${idUser}`, {
+            credentials: "include", // Permite el envío y recepción de cookies
+        });
+
+        const data = await response.json();
+        console.log("getChats data", data);
+
+        return data;
+    }
+
     resetValues() {
         this._offsetPublications = 0;
         this._totalPublications = 0;

@@ -25,6 +25,10 @@ class AppView extends HTMLElement {
         }
     }
 
+    setUserId() {
+        this._publicationView.setUserId();
+    }
+
     renderView(view) {
         this.removeChild(this._renderComponent);
         this._publicationView.setLogged(false);

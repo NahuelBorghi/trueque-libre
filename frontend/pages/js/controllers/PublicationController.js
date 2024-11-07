@@ -46,6 +46,17 @@ class PublicationController {
         return await data.blob();
     }
 
+    async getChats(idUser) {
+        const { chatsData } = await this._modelComponent.getChats(idUser).then();
+
+        this._viewComponent.handleListChat(chatsData);
+    }
+
+    async getUser(idUser) {
+        const data = await this._modelComponent.getUserById(idUser);
+        return data;
+    }
+
     resetValues() {
         this._modelComponent.resetValues();
     }

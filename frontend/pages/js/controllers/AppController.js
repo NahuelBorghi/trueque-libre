@@ -39,6 +39,7 @@ class AppController {
     }
 
     onUserLogged(){
+        this._viewComponent.setUserId()
         this._viewComponent.renderView('publications')
     }
 
