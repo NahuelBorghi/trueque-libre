@@ -22,7 +22,7 @@ class ChatController {
                 const chatUsers = await this.chatService.getChatUsers(chatId);
                 if (chatUsers) {
                     chatUsers.forEach((userId) => {
-                        sendEvent(userId, message);
+                        if (userId !== message.userId) sendEvent(userId, message);
                     });
                 }
             });
