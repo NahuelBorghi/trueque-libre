@@ -128,6 +128,9 @@ class ChatController {
         console.time(label);
         try {
             const { usersIds } = req.body;
+            if (!usersIds || usersIds.length < 2) {
+                throw new BaseException( "Users ids are required", 400, "Bad Request", "CreateChatError" );
+            }
             const chatData = await this.chatService.createChat(usersIds);
             console.timeLog(label, "chat created successfully");
             console.timeEnd(label);
@@ -168,7 +171,7 @@ class ChatController {
         console.time(label);
         try {
             const { chatId } = req.params;
-            const messagesData = await this.chatService.findMessages({ chatId });
+            const messagesData = await this.chatService.findMessages(chatId);
             console.timeLog(label, "messages found successfully");
             console.timeEnd(label);
             return res.status(200).send({ message: "Messages found", messagesData });
