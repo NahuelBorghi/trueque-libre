@@ -71,6 +71,14 @@ class ChatService {
         }
     }
 
+    async getChatUsers(chatId) {
+        try {
+            return await this.mongoRepository.getChatUsers(chatId);
+        } catch (error) {
+            throw new BaseException(`getChatUsersService: ${error.message}`, error.statusCode??400, "Bad Request", "GetChatUsersError");
+        }
+    }
+
 }
 
 module.exports = ChatService;
