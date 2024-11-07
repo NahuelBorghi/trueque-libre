@@ -17,6 +17,7 @@ class ChatController {
 
         // Configura el polling para los mensajes
         this.chatService.pollMessages((newMessages) => {
+            if (!newMessages) return;
             newMessages.forEach((message) => {
                 const { chatId } = message;
                 const chatUsers = chatId.split("-");
