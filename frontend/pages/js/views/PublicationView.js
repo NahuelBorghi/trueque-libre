@@ -5,8 +5,12 @@ import { PublicationDetailView } from "./PublicationDetailView.js";
 class PublicationView extends HTMLElement {
     constructor(modelComponent) {
         super();
+        this._isLogged = false;
+        this._eventSource = {};
+        this._eventRetry = 0;
 
-        this.categories = [];
+        this._userChat = [];
+        this._categories = [];
         this._selectedTag = null;
 
         this._innerControler = new PublicationController(this, modelComponent);
@@ -107,21 +111,21 @@ class PublicationView extends HTMLElement {
         this._chatContainer.className = "d-flex flex-row";
         this._chatContainer.style = "width: 80%; height: 100%";
 
-        this._chatMessagesContainer = document.createElement('div')
-        this._chatMessagesContainer.className = 'h-100 bg-body-secondary'
-        this._chatMessagesContainer.style.width = '80%'
-        const div = document.createElement('div')
-        div.innerText = 'adlkjaklsdjklas'
+        this._chatMessagesContainer = document.createElement("div");
+        this._chatMessagesContainer.className = "h-100 bg-body-secondary";
+        this._chatMessagesContainer.style.width = "80%";
+        const div = document.createElement("div");
+        div.innerText = "adlkjaklsdjklas";
 
-        this._chatMessagesContainer.appendChild(div)
+        this._chatMessagesContainer.appendChild(div);
 
-        this._chatList = document.createElement('div')
-        this._chatList.className = 'h-100 bg-body-tertiary border-1 border-end'
-        this._chatList.style.width = '20%'
-        this._chatList.appendChild(div)
+        this._chatList = document.createElement("div");
+        this._chatList.className = "h-100 bg-body-tertiary border-1 border-end";
+        this._chatList.style.width = "20%";
+        this._chatList.appendChild(div);
 
-        this._chatContainer.appendChild(this._chatList)
-        this._chatContainer.appendChild(this._chatMessagesContainer)
+        this._chatContainer.appendChild(this._chatList);
+        this._chatContainer.appendChild(this._chatMessagesContainer);
 
         this._container.appendChild(this._sideBarContainer);
         this._container.appendChild(this._publicationsContainer);
@@ -133,9 +137,11 @@ class PublicationView extends HTMLElement {
     }
 
     connectedCallback() {
+        this.handleStartEvent();
         this.getCategories();
         this.getPublications();
         this._navButtonLogout.onclick = () => {
+            this._eventSource.close();
             this._innerControler.onPressSignOut();
         };
         this._sideBarButtonBandeja.onclick = () => {
@@ -146,8 +152,8 @@ class PublicationView extends HTMLElement {
             this._innerControler.onPressExplorar();
         };
         this._sideBarButtonCrearTrueques.onclick = () => {
-            if (this.categories.length > 0) {
-                this.categories.forEach((item) => {
+            if (this._categories.length > 0) {
+                this._categories.forEach((item) => {
                     const option = document.createElement("option");
                     option.innerText = item.tagName;
                     option.value = JSON.stringify(item);
@@ -165,10 +171,40 @@ class PublicationView extends HTMLElement {
         this._publicationsContainer.onscroll = async (event) => {
             this.handleOnScroll(event);
         };
+
+        this._eventSource.onopen = () => {
+            console.log("Connected to server events");
+        };
+
+        this._eventSource.onmessage = (event) => {
+            console.log("New message:", event.data);
+            this._innerControler.onEventMessage(event);
+        };
+
+        this._eventSource.onerror = (err) => {
+            this._innerControler.onEventError(err);
+        };
+    }
+
+    handleStartEvent() {
+        if (this._isLogged) {
+            this._eventSource = new EventSource("http://localhost:3000/events");
+        }
+    }
+
+    handleEventError(error) {
+        console.error("SSE connection error:", error);
+    }
+
+    handleEventMessage(data) {
+        console.log("handleEventMessage data", data);
+    }
+
+    setLogged(isLogged) {
+        this._isLogged = isLogged;
     }
 
     addPublications() {
-        console.log("addPublications");
         if (this._container.childNodes[1]) {
             this._container.removeChild(this._container.childNodes[1]);
         }
@@ -177,7 +213,6 @@ class PublicationView extends HTMLElement {
     }
 
     closeModal() {
-        console.log("closeModal");
         this._modalView._modalContainer.style.display = "none";
     }
 
@@ -187,7 +222,6 @@ class PublicationView extends HTMLElement {
     }
 
     async resetPublications() {
-        console.log("resetPublications");
         this._modalView._modalContainer.style.display = "none";
         this._innerControler.resetValues();
         const { data: publications } = await this._innerControler.getPublications();
@@ -254,7 +288,7 @@ class PublicationView extends HTMLElement {
 
     async getCategories() {
         const categories = await this._innerControler.getCategories();
-        this.categories = categories;
+        this._categories = categories;
         if (categories && categories.length > 0) {
             this.createCategoriesButtons(categories);
         }
@@ -266,7 +300,7 @@ class PublicationView extends HTMLElement {
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .replace(/ /g, "");
-        const filteredCategories = this.categories.filter((categorie) =>
+        const filteredCategories = this._categories.filter((categorie) =>
             categorie.tagName
                 .toLowerCase()
                 .normalize("NFD")
@@ -323,7 +357,7 @@ class PublicationView extends HTMLElement {
                 const data = await this._innerControler.getImage(publication.images?.[0]);
                 if (data) {
                     const imgUrl = URL.createObjectURL(data);
-                    console.log("imgUrl", imgUrl);
+
                     image.src = imgUrl;
                 }
 

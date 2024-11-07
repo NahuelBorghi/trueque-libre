@@ -36,12 +36,12 @@ class PublicationController {
     }
 
     async getImage(idImage) {
-        if(!idImage) return
+        if (!idImage) return;
         const data = await this._modelComponent.getImages(idImage);
 
         if (!data.ok) {
-            console.error("ERROR EN TRAER IMAGEN")
-            return
+            console.error("ERROR EN TRAER IMAGEN");
+            return;
         }
         return await data.blob();
     }
@@ -64,6 +64,14 @@ class PublicationController {
 
     onPressExplorar() {
         this._viewComponent.addPublications();
+    }
+
+    onEventMessage(data) {
+        this._viewComponent.handleEventMessage(data);
+    }
+
+    onEventError(error) {
+        this._viewComponent.handleEventError(error);
     }
 }
 
