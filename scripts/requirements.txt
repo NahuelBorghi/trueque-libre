@@ -4,3 +4,4 @@ sentence-transformers==3.0.1
 chromadb==0.5.5
 mysql-connector-python==8.0.28
 python-dotenv==0.19.1
+bcrypt
