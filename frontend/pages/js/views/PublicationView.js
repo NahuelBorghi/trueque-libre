@@ -31,9 +31,9 @@ class PublicationView extends HTMLElement {
         this._navForm.setAttribute("role", "search");
 
         this._imagenISFT = document.createElement("img");
-        this._imagenISFT.src = '../../assets/isft.png'
-        this._imagenISFT.style.height = "100%"
-        this._imagenISFT.style.width  = "110px"
+        this._imagenISFT.src = "../../assets/isft.png";
+        this._imagenISFT.style.height = "100%";
+        this._imagenISFT.style.width = "110px";
 
         this._navButtonLogout = document.createElement("button");
         this._navButtonLogout.className = "btn btn-secondary";
@@ -189,7 +189,7 @@ class PublicationView extends HTMLElement {
     }
 
     handleEventMessage(data) {
-        if(data){
+        if (data) {
             const dataParsed = JSON.parse(data);
             if (this._container.childNodes[1] !== this._chatView) {
                 this._sideBarButtonBandeja.className = this._sideBarButtonBandeja.className.replace(
@@ -199,7 +199,7 @@ class PublicationView extends HTMLElement {
             }
             if (dataParsed.type === "chat") {
                 this._chatView.getChats();
-                return
+                return;
             }
             this._chatView.createMessageTemplate(dataParsed);
         }
@@ -369,8 +369,21 @@ class PublicationView extends HTMLElement {
                 containerColumn.id = publication.id;
 
                 const containerCard = document.createElement("div");
-                containerCard.className = "card";
-                containerCard.style = "width: 16rem";
+                containerCard.className = "card pb-3";
+                containerCard.style.width = "16rem";
+                containerCard.style.cursor = "pointer";
+                
+                containerCard.onmouseenter = () => {
+                    // this._innerControler.onClickVisualize(new CustomEvent("categoriePress", { detail: publication }));
+                    containerCard.className = 'card pb-3 bg-body-secondary border-secondary'
+                };
+                containerCard.onmouseleave = () => {
+                    // this._innerControler.onClickVisualize(new CustomEvent("categoriePress", { detail: publication }));
+                    containerCard.className = 'card pb-3'
+                };
+                containerCard.onclick = () => {
+                    this._innerControler.onClickVisualize(new CustomEvent("categoriePress", { detail: publication }));
+                };
 
                 const image = document.createElement("img");
                 image.className = "card-img-top";
@@ -413,21 +426,13 @@ class PublicationView extends HTMLElement {
 
                 const description = document.createElement("p");
                 description.className = "card-text overflow-hidden";
-                description.style = "display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;";
+                description.style = "display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;";
                 description.innerText = publication.description;
-
-                const button = document.createElement("button");
-
-                button.className = "btn btn-primary";
-                button.innerText = "Visualizar";
-                button.onclick = () => {
-                    this._innerControler.onClickVisualize(new CustomEvent("categoriePress", { detail: publication }));
-                };
 
                 content.appendChild(title);
                 content.appendChild(tagsContainer);
                 content.appendChild(description);
-                content.appendChild(button);
+                // content.appendChild(button);
                 containerCard.appendChild(image);
                 containerCard.appendChild(content);
                 containerColumn.appendChild(containerCard);
