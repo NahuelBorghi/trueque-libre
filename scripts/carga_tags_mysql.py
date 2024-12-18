@@ -46,7 +46,7 @@ def insertar_tag(tagName):
 
         cursor.execute(query, valores)
         conexion.commit()
-        print(f"Tag '{tagName}' insertado con id {id}")
+        # print(f"Tag '{tagName}' insertado con id {id}")
     except mysql.connector.Error as error:
         print(f"Error al insertar el tag '{tagName}': {error}")
         conexion.rollback()

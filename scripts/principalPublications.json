@@ -45,7 +45,7 @@
     },
     {
         "title": "Consola PlayStation 4",
-        "description": "Consola PlayStation 4 con dos controles y 5 juegos incluidos.",
+        "description": "Consola PlayStation 4 con dos controles y 4 juegos incluidos.",
         "state": "Usado - Aceptable",
         "status": "En trueque",
         "exchange": "Nintendo Switch o Xbox One.",
@@ -95,7 +95,7 @@
         "exchange": "Botas de cuero o mochila de viaje.",
         "ubication": "Mar del Plata",
         "tags": ["Accesorios"],
-        "imagenes": ["imagen_campera_1.jpg", "imagen_campera_2.jpg"],
+        "imagenes": ["imagen_campera_1.jpg", "imagen_campera_2.jpg", "imagen_campera_3.jpg"],
         "creationDate": "2024-10-03T21:58:00.562Z"
     },
     {
@@ -210,7 +210,7 @@
     },
     {
         "title": "Lote de ropa de bebé",
-        "description": "Conjunto de ropa para bebé de 0 a 6 meses, incluye prendas variadas.",
+        "description": "Conjuntos de ropa para bebé de 18 meses",
         "state": "Usado - Buen estado",
         "status": "En trueque",
         "exchange": "Juguetes educativos o pañales.",
@@ -414,6 +414,6 @@
         "exchange": "Drone pequeño o estabilizador de cámara.",
         "ubication": "Mar del Plata",
         "tags": ["Cámaras"],
-        "imagenes": ["imagen_gopro_1.jpg", "imagen_gopro_2.jpg"]
+        "imagenes": ["imagen_gopro_1.jpg", "imagen_gopro_2.jpg", "imagen_gopro_3.jpg"]
     }
 ]

@@ -32,7 +32,11 @@ class ImageController {
                     throw new BaseException("File upload error", 400, "Bad Request", "FileUploadError");
                 }
                 
-                const idUser = req.user.id;
+                const idUser = req.user?.id ?? req.query.idUser;
+                console.log('idUser', idUser);
+                console.log('req.query', req.query);
+                console.log('req.user', req.user);
+                console.log('req.body', req.body);
                 const { publicationId } = req.query;
                 const file = req.file;
 

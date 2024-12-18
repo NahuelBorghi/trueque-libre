@@ -3,7 +3,7 @@ const { verifyToken } = require("../utils/jwt");
 
 // Middleware para verificar el JWT desde una cookie
 async function jwtMiddleware(req, res, next) {
-    const excludedPaths = ["/user/login", "/user/register"]; // Rutas excluidas
+    const excludedPaths = ["/user/login", "/user/register", "/image/upload"]; // Rutas excluidas
 
     // Excluir ciertas rutas del middleware
     if (excludedPaths.some((path) => req.path.startsWith(path))) {

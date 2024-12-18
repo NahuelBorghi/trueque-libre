@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from datetime import datetime
 import bcrypt
 import random
+import mimetypes
+import requests
 
 # Carga el archivo .env un nivel más arriba del directorio del script
 env_path = Path('../') / '.env'
@@ -53,9 +55,9 @@ def insertar_user(user):
 
         cursor.execute(query, valores)
         conexion.commit()
-        print(f"Usuario '{user["userName"]}' insertado con id {id}")
+        print(f'Usuario "{user["userName"]}" insertado con id {id}')
     except mysql.connector.Error as error:
-        print(f"Error al insertar el usuario '{user["userName"]}': {error}")
+        print(f'Error al insertar el usuario "{user["userName"]}": {error}')
         conexion.rollback()
 
 # Ejemplo de uso
@@ -79,13 +81,13 @@ def get_categories(categories):
     for categorie in categories:
         cursor.execute("SELECT * FROM Tags WHERE tagName = %s", (categorie,))
         categorieDB = cursor.fetchall()
-        arrayCategorie.insert(0, categorieDB[0][0].decode("utf-8"))
+        arrayCategorie.insert(0, categorieDB[0][0])
     return ','.join(arrayCategorie)
 
 def insertar_publications(publication):
     try:
         indexRandom = random.randint(0, len(usersBD) - 1)
-        userId = usersBD[indexRandom]["id"].decode('utf-8')
+        userId = usersBD[indexRandom]["id"]
         idCategorie = get_categories(publication["tags"])
         idPublication = str(uuid.uuid4())  # Genera un UUID v4
 
@@ -106,23 +108,81 @@ def insertar_publications(publication):
 
         cursor.execute(queryPublications, valoresPublications)
         conexion.commit()
-        print(f"Publicación '{publication["title"]}' insertado con id {idPublication}")
+        print(f'Publicación "{publication["title"]}" insertado con id {idPublication}')
 
         queryTags = "INSERT INTO TagPublication (Publications_id, idTags) VALUES (%s, %s)"
         valoresTags = (idPublication, idCategorie,)
 
         cursor.execute(queryTags, valoresTags)
         conexion.commit()
-        print(f"Tag '{idCategorie}' relacionado con publicación {publication["title"]}")
+        print(f'Tag "{idCategorie}" relacionado con publicación {publication["title"]}')
+        
+        print(publication["imagenes"])
+        url = "http://localhost:8080/image/upload"
+        for image in publication["imagenes"]:
+            try:
+                # Ruta completa del archivo
+                imagePath = f"images/{image}"
 
-        queryTags = "INSERT INTO TagPublication (Publications_id, idTags) VALUES (%s, %s)"
-        valoresTags = (idPublication, idCategorie,)
+                # Detectar el tipo MIME del archivo
+                mime_type, _ = mimetypes.guess_type(imagePath)
 
-        cursor.execute(queryTags, valoresTags)
-        conexion.commit()
-        print(f"Tag '{idCategorie}' relacionado con publicación {publication["title"]}")
+                # Validar tipo MIME
+                if mime_type not in ['image/jpeg', 'image/png']:
+                    print(f"Tipo de archivo no válido: {image} ({mime_type})")
+                    continue
+
+                # Abrir el archivo como binario
+                with open(imagePath, 'rb') as file:
+                    # Crear el formulario de datos
+                    files = {'file': (image, file, mime_type)}  # Nombre del campo 'file'
+                    params = {
+                        'publicationId': idPublication,  # Cambiado para coincidir con el backend
+                        'idUser': userId,
+                    }
+
+                    # Realizar la solicitud POST
+                    response = requests.post(url, files=files, params=params)
+
+                    # Verificar la respuesta
+                    if response.status_code == 201:
+                        print(f"Imagen {image} subida correctamente: {response.json()}")
+                    else:
+                        print(f"Error al subir la imagen {image}: {response.status_code} - {response.text}")
+            except FileNotFoundError:
+                print(f"Archivo no encontrado: {image}")
+            except Exception as e:
+                print(f"Error inesperado al procesar la imagen {image}: {e}")
+            # file_path = "images/" + imagen  # Ruta original del archivo
+            # if not os.path.exists(file_path):
+            #     print(f'Error: El archivo "{file_path}" no existe.')
+            #     continue  # Salta al siguiente archivo si no existe
+
+            # queryImage = "INSERT INTO Image (id, image, mimetype, creationDate, creationUser) VALUES (%s, %s, %s, %s, %s)"
+            # idImage = str(uuid.uuid4())
+            # valoresImage = (idImage, "", "image/jpg", datetime.now().strftime('%Y-%m-%d %H:%M:%S'), userId,)
+            
+            # cursor.execute(queryImage, valoresImage)
+            # conexion.commit()
+            # print(f'Imagen "{imagen}" insertado con id {idImage}')
+            
+            # queryImagesRelation = "INSERT INTO ImagePublication (id, idPublication, idUser, idImage) VALUES (%s, %s, %s, %s)"
+            # valoresImagesRelation = (str(uuid.uuid4()), idPublication, userId, idImage,)
+
+            # cursor.execute(queryImagesRelation, valoresImagesRelation)
+            # conexion.commit()
+            # print(f'Imagen "{imagen}" relacionado con publicación {publication["title"]}')
+            
+            # # Copiar la imagen al directorio destino
+            # destination_dir = f"../backend/images/{userId}/"  # Ruta destino
+            # os.makedirs(destination_dir, exist_ok=True)  # Crear el directorio si no existe
+            
+            # destination_path = os.path.join(destination_dir, imagen)  # Ruta completa de destino
+            # shutil.copy(file_path, destination_path)  # Copiar el archivo
+            # print(f'Imagen "{imagen}" copiada a {destination_path}')
+
     except mysql.connector.Error as error:
-        print(f"Error al insertar la publicacion '{publication["title"]}': {error}")
+        print(f'Error al insertar la publicacion "{publication["title"]}": {error}')
 
 # Ejemplo de uso
 try:
