@@ -44,18 +44,23 @@ with open(usersPath, 'r', encoding="utf-8") as file:
 # Función para insertar datos en la tabla tags
 def insertar_user(user):
     try:
-        id = str(uuid.uuid4())  # Genera un UUID v4
-        salt = bcrypt.gensalt()
-        # Crear el hash de la contraseña
-        hashed_password = bcrypt.hashpw(user["password"].encode('utf-8'), salt)
-
-
-        query = "INSERT INTO Users (id, userName, password, email, state) VALUES (%s, %s, %s, %s, %s)"
-        valores = (id, user["userName"], hashed_password, user["email"], user["state"])
-
-        cursor.execute(query, valores)
-        conexion.commit()
-        print(f'Usuario "{user["userName"]}" insertado con id {id}')
+        userName = user["userName"]
+        password = user["password"]
+        email = user["email"]
+        data = {
+            "userName": userName,
+            "password": str(password),
+            "email": email
+        }
+        data = json.dumps(data)
+        print(data)
+        response = requests.post("http://localhost:8080/user/register", data=data, headers={"Content-Type": "application/json"})
+        # Verificar la respuesta
+        if response.status_code == 201:
+            print(f"Usuario {userName} insertado correctamente: {response.json()}")
+        else:
+            print(f"Error al insertar el usuario {userName}: {response.status_code} - {response.text}")
+        print(f'Usuario "{user["userName"]}"')
     except mysql.connector.Error as error:
         print(f'Error al insertar el usuario "{user["userName"]}": {error}')
         conexion.rollback()

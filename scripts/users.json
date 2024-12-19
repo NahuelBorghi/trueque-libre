@@ -2,70 +2,70 @@
     {
         "id": 1,
         "userName": "juanperez",
-        "password": "Juan1234",
+        "password": "Jua12",
         "email": "juan.perez@example.com",
         "state": false
     },
     {
         "id": 2,
         "userName": "maria.lopez",
-        "password": "Maria5678",
+        "password": "Mar56",
         "email": "maria.lopez@example.com",
         "state": false
     },
     {
         "id": 3,
         "userName": "carlos.garcia",
-        "password": "Carlos9876",
+        "password": "Car98",
         "email": "carlos.garcia@example.com",
         "state": false
     },
     {
         "id": 4,
         "userName": "laura.martinez",
-        "password": "Laura2024",
+        "password": "Lau20",
         "email": "laura.martinez@example.com",
         "state": false
     },
     {
         "id": 5,
         "userName": "andres.rodriguez",
-        "password": "Andres0000",
+        "password": "And00",
         "email": "andres.rodriguez@example.com",
         "state": false
     },
     {
         "id": 6,
         "userName": "paula.gomez",
-        "password": "Paula1111",
+        "password": "Pau11",
         "email": "paula.gomez@example.com",
         "state": false
     },
     {
         "id": 7,
         "userName": "fernando.sanchez",
-        "password": "Fernando7777",
+        "password": "Fer77",
         "email": "fernando.sanchez@example.com",
         "state": false
     },
     {
         "id": 8,
         "userName": "monica.ramos",
-        "password": "Monica3333",
+        "password": "Mon33",
         "email": "monica.ramos@example.com",
         "state": false
     },
     {
         "id": 9,
         "userName": "diego.fernandez",
-        "password": "Diego4444",
+        "password": "Die44",
         "email": "diego.fernandez@example.com",
         "state": false
     },
     {
         "id": 10,
         "userName": "valeria.cruz",
-        "password": "Valeria8888",
+        "password": "Val88",
         "email": "valeria.cruz@example.com",
         "state": false
     }
